@@ -1,0 +1,46 @@
+﻿@model List<Foosball.Models.UserListViewModel>
+
+@section Styles {
+	@Styles.Render("//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css")
+}
+@section Scripts {
+	@Scripts.Render("//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js")
+}
+
+<table id="accountsTable" class="display" cellspacing="0">
+	<thead>
+		<tr>
+			<th></th>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Email</th>
+		</tr>
+	</thead>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#accountsTable').dataTable({
+			"ajax": '/account/listdata',
+			paging: false,
+			info: false,
+			columns: [
+				{ data: 'ImageUrl' },
+				{ data: 'FirstName' },
+				{ data: 'LastName' },
+				{ data: 'Email' }
+			],
+			columnDefs: [
+				{
+					targets: 0,
+					width: '65px',
+					render: function (data, type, row) {
+						if (!data)
+							return '';
+						return '<img src="' + data + '"/>';
+					}
+				}
+			]
+		});
+	});
+</script>

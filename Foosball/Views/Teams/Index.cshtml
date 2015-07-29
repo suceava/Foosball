@@ -1,0 +1,43 @@
+﻿@model List<Foosball.Entities.Team>
+
+@section Styles {
+	@Styles.Render("//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css")
+}
+@section Scripts {
+	@Scripts.Render("//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js")
+}
+
+<table id="teamsTable" class="display" cellspacing="0">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Location</th>
+			<th>Name</th>
+			<th>Division</th>
+		</tr>
+	</thead>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#teamsTable').dataTable({
+			"ajax": '/teams/listdata',
+			paging: false,
+			info: false,
+			columns: [
+				{ data: 'ImageUrl' },
+				{ data: 'Location' },
+				{ data: 'Name' },
+				{ data: 'Division' }
+			],
+			columnDefs: [
+				{
+					targets: 0,
+					render: function (data, type, row) {
+						return '<img src="' + data + '"/>';
+					}
+				}
+			]
+		});
+	});
+</script>
