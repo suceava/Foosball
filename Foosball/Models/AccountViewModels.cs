@@ -1,4 +1,5 @@
 ﻿using Foosball.DataContexts;
+using Foosball.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,10 +9,27 @@ namespace Foosball.Models
 {
 	public class UserListViewModel
 	{
+		public string Id { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
 		public string ImageUrl { get; set; }
+
+		#region conversion
+
+		public static UserListViewModel FromUser(User user)
+		{
+			return new UserListViewModel()
+			{
+				Id = user.Id,
+				Email = user.Email,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				ImageUrl = user.ImageUrl
+			};
+		}
+
+		#endregion
 
 		public static List<UserListViewModel> GetList()
 		{
@@ -19,6 +37,7 @@ namespace Foosball.Models
 			{
 				return db.Users.Select(u => new UserListViewModel()
 				{
+					Id = u.Id,
 					Email = u.Email,
 					FirstName = u.FirstName,
 					LastName = u.LastName,

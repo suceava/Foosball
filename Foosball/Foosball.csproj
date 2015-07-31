@@ -188,8 +188,10 @@
     <Compile Include="Controllers\SchedulesController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
     <Compile Include="DataContexts\IdentityDb.cs" />
+    <Compile Include="DataContexts\PicksDb.cs" />
     <Compile Include="DataContexts\SchedulesDb.cs" />
     <Compile Include="DataContexts\TeamsDb.cs" />
+    <Compile Include="Entities\Pick.cs" />
     <Compile Include="Entities\Schedule.cs" />
     <Compile Include="Entities\Team.cs" />
     <Compile Include="Extensions\GenericPrincipalExtensions.cs" />
@@ -199,6 +201,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PickViewModels.cs" />
     <Compile Include="Models\ScheduleViewModels.cs" />
     <Compile Include="Models\TeamViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
