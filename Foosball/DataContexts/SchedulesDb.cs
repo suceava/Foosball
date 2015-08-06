@@ -12,5 +12,13 @@ namespace Foosball.DataContexts
 		public SchedulesDb() : base("DefaultConnection") { }
 
 		public DbSet<Schedule> Schedules { get; set; }
+
+		public static int? GetCurrentWeek()
+		{
+			using (var db = new SchedulesDb())
+			{
+				return db.Schedules.Where(s => s.Date >= DateTime.Now).Min(s => (int?)s.Week);
+            }
+		}
 	}
 }

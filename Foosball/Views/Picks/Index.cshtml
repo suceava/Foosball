@@ -1,0 +1,162 @@
+﻿@model List<Foosball.Models.PickViewModel>
+
+<h2>Week @ViewBag.CurrentWeek</h2>
+<h6>Click a team to pick it</h6>
+
+<table id="picksTable" class="display" cellspacing="0">
+	<thead>
+		<tr>
+			<th>Home</th>
+			<th>Away</th>
+			<th>Combined Score</th>
+			<th>Date</th>
+		</tr>
+	</thead>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#picksTable').dataTable({
+			"ajax": '/picks/listdata' + location.search,
+			paging: false,
+			info: false,
+			order: [3, 'asc'],
+			columns: [
+				{ data: 'Schedule.HomeTeam' },
+				{ data: 'Schedule.AwayTeam' },
+				{ data: 'CombinedScore' },
+				{ data: 'Schedule.Date' }
+			],
+			columnDefs: [
+				{
+					targets: 0,
+					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+						var td = $(cell);
+						td.data('scheduleId', rowData.Schedule.Id);
+						td.data('isHomeTeam', true);
+
+						if (rowData.IsPick && rowData.PickHomeTeam)
+						{
+							td.addClass('picked');
+						}
+						if (rowData.CanPick) {
+							td.addClass('pickable');
+						}
+					},
+					render: function (data, type, row) {
+						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+					}
+				},
+				{
+					targets: 1,
+					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+						var td = $(cell);
+						td.data('scheduleId', rowData.Schedule.Id);
+						td.data('isHomeTeam', false);
+
+						if (rowData.IsPick && !rowData.PickHomeTeam) {
+							td.addClass('picked');
+						}
+						if (rowData.CanPick) {
+							td.addClass('pickable');
+						}
+					},
+					render: function (data, type, row) {
+						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+					}
+				},
+				{
+					targets: 2,
+					width: '150px',
+					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+						var td = $(cell);
+						td.data('scheduleId', rowData.Schedule.Id);
+					},
+					render: function (data, type, row) {
+						if (row.ShowCombinedScore) {
+							return '<div class="col-xs-6"><input type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
+						}
+						else {
+							return '';
+						}
+					}
+				}
+			]
+		});
+	});
+
+	$('#picksTable')
+		.on('click', 'td.pickable', function (e) {
+			savePick($(this));
+		})
+		.on('click', 'td.pickable span', function(e) {
+			savePick($(this).parent());
+		});
+
+	$('#picksTable')
+		.on('keyup', 'input.form-control', function () {
+			clearTimeout($.data(this, 'timer'));
+			var wait = setTimeout(saveScore, 500, $(this));
+			$(this).data('timer', wait);
+		});
+
+	function savePick(td) {
+		var	tr = td.parent(),
+			scheduleId = td.data('scheduleId'),
+			isHomeTeam = td.data('isHomeTeam');
+
+		// picked
+		tr.find('td').removeClass('picked');
+		td.addClass('picked');
+
+		save(scheduleId, isHomeTeam, null);
+	}
+
+	function saveScore(input) {
+		var div = input.parent(),
+			td = div.parent(),
+			tr = td.parent(),
+			scheduleId = td.data('scheduleId'),
+			score = input.val();
+	
+		div.removeClass('has-error');
+
+		if (!$.isNumeric(score)) {
+			div.addClass('has-error');
+			return;		
+		}
+
+		try {
+			score = parseInt(score, 10);
+		}
+		catch(ex) {
+			div.addClass('has-error');
+			return;		
+		}
+
+		if (score < 0) {
+			div.addClass('has-error');
+			return;
+		}
+
+		save(scheduleId, null, score);
+	}
+
+	function save(scheduleId, isHomeTeam, combinedScore) {
+		// save the pick
+		$.ajax({
+			url: '/picks/pick',
+			method: 'POST',
+			data: {
+				PickHomeTeam: isHomeTeam,
+				CombinedScore: combinedScore,
+				Schedule: {
+					Id: scheduleId
+				}
+			},
+			success: function (e) {
+				console.log('pick saved');
+			}
+		});
+	}
+</script>

@@ -61,7 +61,6 @@ namespace Foosball.Controllers
 
 			#endregion
 
-
 			schedule.Save();
 
 			return RedirectToAction("Index");

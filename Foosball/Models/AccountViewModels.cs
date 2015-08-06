@@ -1,5 +1,6 @@
 ﻿using Foosball.DataContexts;
 using Foosball.Entities;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,18 +34,23 @@ namespace Foosball.Models
 
 		public static List<UserListViewModel> GetList()
 		{
+			return GetFilteredList(id: null);
+		}
+
+		private static List<UserListViewModel> GetFilteredList(string id = null)
+		{
+			var predicate = PredicateBuilder.True<User>();
+			if (id != null)
+			{
+				predicate = predicate.And(u => u.Id == id);
+			}
+
 			using (var db = IdentityDb.Create())
 			{
-				return db.Users.Select(u => new UserListViewModel()
-				{
-					Id = u.Id,
-					Email = u.Email,
-					FirstName = u.FirstName,
-					LastName = u.LastName,
-					ImageUrl = u.ImageUrl
-				}).ToList();
+				return db.Users.OrderBy(u => u.Email).Where(predicate).ToList().Select(u => UserListViewModel.FromUser(u)).ToList();
 			}
 		}
+
 	}
 
 	public class ForgotViewModel

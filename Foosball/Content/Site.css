@@ -45,3 +45,11 @@ textarea {
 .team-name-list {
 
 }
+td.picked {
+	font-weight: bold;
+	color: darkseagreen;
+	background-color: #eeeeff !important;
+}
+td.pickable {
+	cursor: pointer;
+}

@@ -9,11 +9,15 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Styles.Render("~/Content/css")
+	@*@Styles.Render("//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css")*@
 	@RenderSection("Styles", required: false)
+
 
     @Scripts.Render("~/bundles/modernizr")
 	@Scripts.Render("~/bundles/jquery")
 	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/datatables")
+	@*@Scripts.Render("//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js")*@
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -28,6 +32,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</li>
+					<li>@Html.ActionLink("Picks", "Index", "Picks", new { area = "" }, null)</li>
 
 					@if (User.IsAdmin())
 					{

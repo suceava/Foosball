@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -19,6 +20,6 @@ namespace Foosball.Entities
 		public virtual Schedule Schedule { get; set; }
 
 		public bool PickHomeTeam { get; set; }
-		public int ScoreDifferential { get; set; }
+		public int CombinedScore { get; set; }
 	}
 }

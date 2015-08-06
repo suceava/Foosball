@@ -20,6 +20,17 @@ namespace Foosball.Models
 		public TeamViewModel HomeTeam { get; set; }
 		public TeamViewModel AwayTeam { get; set; }
 
+		public bool IsPickable()
+		{
+			// TODO: timezone
+			return Date > DateTime.Now;
+		}
+
+		public bool IsMondayGame()
+		{
+			return Date.DayOfWeek == DayOfWeek.Monday;
+		}
+
 		#region conversion
 
 		public static ScheduleViewModel FromSchedule(Schedule schedule)
@@ -61,17 +72,21 @@ namespace Foosball.Models
 			return GetFilteredList(id: id).FirstOrDefault();
 		}
 
-		public static List<ScheduleViewModel> GetList()
+		public static List<ScheduleViewModel> GetList(int? week = null)
 		{
-			return GetFilteredList();
+			return GetFilteredList(week: week);
 		}
 
-		private static List<ScheduleViewModel> GetFilteredList(int? id = null)
+		private static List<ScheduleViewModel> GetFilteredList(int? id = null, int? week = null)
 		{ 
 			var predicate = PredicateBuilder.True<Schedule>();
 			if (id.HasValue)
 			{
 				predicate = predicate.And(s => s.Id == id.Value);
+			}
+			if (week.HasValue)
+			{
+				predicate = predicate.And(s => s.Week == week.Value);
 			}
 
 			using (var db = new SchedulesDb())
