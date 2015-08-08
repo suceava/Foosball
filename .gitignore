@@ -195,4 +195,8 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+# user config files
 userConnections.config
+
+# publish folder
+.publish/
