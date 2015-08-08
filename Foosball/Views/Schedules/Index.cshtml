@@ -2,7 +2,7 @@
 
 <a href="/schedules/edit/0" class="btn btn-default">Add Schedule</a>
 
-<table id="schedulesTable" class="display" cellspacing="0">
+<table id="schedulesTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
 			<th>Week</th>
@@ -42,13 +42,16 @@
 				{
 					targets: 4,
 					render: function (data, type, row) {
-						return '<a href="/schedules/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>  <a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>'
+						var edit = '<a href="/schedules/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>',
+							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>';
+
+						return edit + ' ' + del;
 					}
 				}
 			]
 		});
 
-		$(document).on('click', 'a.glyphicon-remove-circle', function (e) {
+		$('#schedulesTable').on('click', 'a.glyphicon-remove-circle', function (e) {
 			var id = $(this).attr('data-id');
 			if (confirm('Are you sure you want to delete the schedule?')) {
 				$.ajax({

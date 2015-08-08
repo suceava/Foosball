@@ -53,3 +53,6 @@ td.picked {
 td.pickable {
 	cursor: pointer;
 }
+tr.user-role-guest {
+	background-color: #fee !important;
+}

@@ -10,7 +10,8 @@ using System.Web.Mvc;
 
 namespace Foosball.Controllers
 {
-    public class PicksController : BaseController
+	[Authorize(Roles = "Admin,User")]
+	public class PicksController : BaseController
     {
         [HttpGet]
         public ActionResult Index(int? week)

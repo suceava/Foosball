@@ -1,6 +1,6 @@
 ﻿@model List<Foosball.Entities.Team>
 
-<table id="teamsTable" class="display" cellspacing="0">
+<table id="teamsTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
 			<th></th>
@@ -17,6 +17,7 @@
 			"ajax": '/teams/listdata',
 			paging: false,
 			info: false,
+			order: [1, 'asc'],
 			columns: [
 				{ data: 'ImageUrl' },
 				{ data: 'Location' },

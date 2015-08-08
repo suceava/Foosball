@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Foosball.Entities;
 using Foosball.Models;
 using System.Text;
+using System.Net;
 
 namespace Foosball.Controllers
 {
@@ -131,7 +132,7 @@ namespace Foosball.Controllers
 				{
 					var currentUser = UserManager.FindByEmail(user.Email);
 
-					var roleresult = UserManager.AddToRole(currentUser.Id, "User");
+					var roleresult = UserManager.AddToRole(currentUser.Id, "Guest");
 
 					await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
@@ -270,6 +271,70 @@ namespace Foosball.Controllers
 		{
 			return Json(new { data = UserListViewModel.GetList() }, JsonRequestBehavior.AllowGet);
         }
+
+		[HttpPost]
+		public ActionResult SecurityUp(string id)
+		{
+			#region validate
+
+			var user = UserManager.FindById(id);
+			if (user == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "User not found");
+			}
+
+			// we expect the user to be in only one role
+			var roles = UserManager.GetRoles(id);
+			if (roles == null || roles.Count != 1)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid user role");
+			}
+
+			var role = roles[0];
+			if (role == "Admin")
+			{
+				return Json(null);
+			}
+
+			#endregion
+
+			UserManager.RemoveFromRole(id, role);
+			UserManager.AddToRole(id, (role == "Guest") ? "User" : "Admin");
+
+			return Json(null);
+		}
+
+		[HttpPost]
+		public ActionResult SecurityDown(string id)
+		{
+			#region validate
+
+			var user = UserManager.FindById(id);
+			if (user == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "User not found");
+			}
+
+			// we expect the user to be in only one role
+			var roles = UserManager.GetRoles(id);
+			if (roles == null || roles.Count != 1)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid user role");
+			}
+
+			var role = roles[0];
+			if (role == "Guest")
+			{
+				return Json(null);
+			}
+
+			#endregion
+
+			UserManager.RemoveFromRole(id, role);
+			UserManager.AddToRole(id, (role == "Admin") ? "User" : "Guest");
+
+			return Json(null);
+		}
 
 		protected override void Dispose(bool disposing)
 		{

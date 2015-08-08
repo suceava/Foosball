@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace Foosball.Controllers
 {
+	[Authorize(Roles = "Admin")]
     public class SchedulesController : BaseController
     {
 		[HttpGet]

@@ -7,7 +7,8 @@ using System.Web.Mvc;
 
 namespace Foosball.Controllers
 {
-    public class TeamsController : BaseController
+	[Authorize(Roles = "Admin")]
+	public class TeamsController : BaseController
     {
 		[HttpGet]
 		public ActionResult Index()

@@ -1,9 +1,11 @@
 ﻿using Foosball.DataContexts;
 using Foosball.Entities;
 using LinqKit;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 
 namespace Foosball.Models
@@ -15,18 +17,32 @@ namespace Foosball.Models
 		public string LastName { get; set; }
 		public string Email { get; set; }
 		public string ImageUrl { get; set; }
+		public string Role { get; set; }
 
 		#region conversion
 
-		public static UserListViewModel FromUser(User user)
+		public static UserListViewModel FromUser(User user, IDbSet<IdentityRole> roles = null)
 		{
+			var role = string.Empty;
+			if (roles != null)
+			{
+				// find the role names
+				foreach (var userRole in user.Roles)
+				{
+					if (role.Length > 0)
+						role += ",";
+					role += roles.First(r => r.Id == userRole.RoleId).Name;
+				}
+			}
+
 			return new UserListViewModel()
 			{
 				Id = user.Id,
 				Email = user.Email,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
-				ImageUrl = user.ImageUrl
+				ImageUrl = user.ImageUrl,
+				Role = role
 			};
 		}
 
@@ -47,7 +63,7 @@ namespace Foosball.Models
 
 			using (var db = IdentityDb.Create())
 			{
-				return db.Users.OrderBy(u => u.Email).Where(predicate).ToList().Select(u => UserListViewModel.FromUser(u)).ToList();
+				return db.Users.OrderBy(u => u.Email).Where(predicate).ToList().Select(u => UserListViewModel.FromUser(u, db.Roles)).ToList();
 			}
 		}
 

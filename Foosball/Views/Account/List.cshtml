@@ -1,12 +1,14 @@
 ﻿@model List<Foosball.Models.UserListViewModel>
 
-<table id="accountsTable" class="display" cellspacing="0">
+<table id="accountsTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
 			<th></th>
 			<th>First Name</th>
 			<th>Last Name</th>
 			<th>Email</th>
+			<th>Role</th>
+			<th></th>
 		</tr>
 	</thead>
 </table>
@@ -17,23 +19,70 @@
 			"ajax": '/account/listdata',
 			paging: false,
 			info: false,
+			order: [1, 'asc'],
+			createdRow: function(row, data, dataIndex) {
+				if (data.Role == 'Guest') {
+					$(row).addClass('user-role-guest');
+				}
+			},
 			columns: [
 				{ data: 'ImageUrl' },
 				{ data: 'FirstName' },
 				{ data: 'LastName' },
-				{ data: 'Email' }
+				{ data: 'Email' },
+				{ data: 'Role' }
 			],
 			columnDefs: [
 				{
 					targets: 0,
 					width: '65px',
+					sortable: false,
 					render: function (data, type, row) {
 						if (!data)
 							return '';
 						return '<img src="' + data + '"/>';
 					}
+				},
+				{
+					targets: 5,
+					sortable: false,
+					render: function (data, type, row) {
+						var edit = '<a href="/accounts/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>',
+							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>',
+							secUp = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-up" data-id="' + row.Id + '"></a>',
+							secDown = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-down" data-id="' + row.Id + '"></a>';
+
+						return (row.Role == 'Guest') ? secUp : (row.Role == 'User') ? secDown : '';
+					}
 				}
 			]
 		});
+
+		$('#accountsTable').on('click', 'a.glyphicon-chevron-up', function (e) {
+			var id = $(this).attr('data-id');
+			if (confirm('Are you sure you want to promote this user?')) {
+				$.ajax({
+						url: '/account/securityup/' + id,
+						method: 'POST'
+					})
+					.always(function () {
+						window.location.reload();
+					});
+			}
+		});
+
+		$('#accountsTable').on('click', 'a.glyphicon-chevron-down', function (e) {
+			var id = $(this).attr('data-id');
+			if (confirm('Are you sure you want to demote this user?')) {
+				$.ajax({
+					url: '/account/securitydown/' + id,
+					method: 'POST'
+				})
+					.always(function () {
+						window.location.reload();
+					});
+			}
+		});
+
 	});
 </script>
