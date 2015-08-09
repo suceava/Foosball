@@ -17,7 +17,7 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#picksTable').dataTable({
-			"ajax": '/picks/listdata' + location.search,
+			"ajax": _rootDir + 'picks/listdata' + location.search,
 			paging: false,
 			info: false,
 			order: [3, 'asc'],
@@ -145,7 +145,7 @@
 	function save(scheduleId, isHomeTeam, combinedScore) {
 		// save the pick
 		$.ajax({
-			url: '/picks/pick',
+			url: _rootDir + 'picks/pick',
 			method: 'POST',
 			data: {
 				PickHomeTeam: isHomeTeam,

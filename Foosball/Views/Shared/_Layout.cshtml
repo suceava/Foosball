@@ -12,6 +12,9 @@
 	@*@Styles.Render("//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css")*@
 	@RenderSection("Styles", required: false)
 
+	<script type="text/javascript">
+		var _rootDir = "@Url.Content("~/")";
+	</script>
 
     @Scripts.Render("~/bundles/modernizr")
 	@Scripts.Render("~/bundles/jquery")
@@ -32,8 +35,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</li>
-					<li>@Html.ActionLink("Picks", "Index", "Picks", new { area = "" }, null)</li>
-
+					@if (User.IsInRole("User") || User.IsAdmin())
+					{
+						<li>@Html.ActionLink("Picks", "Index", "Picks", new { area = "" }, null)</li>
+					}
 					@if (User.IsAdmin())
 					{
 						<li>@Html.ActionLink("Schedules", "Index", "Schedules", new { area = "" }, null)</li>
