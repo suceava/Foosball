@@ -21,14 +21,6 @@ namespace Foosball.Models
 		public bool CanPick { get; set; }
 		// indicates if it's a pick made by user or a un-picked scheduled game
 		public bool IsPick { get; set; }
-		// indicates if UI should show score
-		public bool ShowCombinedScore
-		{
-			get
-			{
-				return Schedule == null ? false : Schedule.IsMondayGame();
-			}
-		}
 
 		#region conversion
 

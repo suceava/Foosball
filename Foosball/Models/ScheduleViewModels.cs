@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Foosball.Models
 {
@@ -15,20 +16,20 @@ namespace Foosball.Models
 	{
 		public int Id { get; set; }
 		public int Week { get; set; }
+		[Display(Name = "Date & Time (in EST)")]
 		[JsonConverter(typeof(IsoDateTimeConverter))]
 		public DateTime Date { get; set; }
+		[Display(Name = "Home Team")]
 		public TeamViewModel HomeTeam { get; set; }
+		[Display(Name = "Away Team")]
 		public TeamViewModel AwayTeam { get; set; }
+		[Display(Name = "Require Score")]
+		public bool RequireScore { get; set; }
 
 		public bool IsPickable()
 		{
 			// TODO: timezone
 			return Date > DateTime.Now;
-		}
-
-		public bool IsMondayGame()
-		{
-			return Date.DayOfWeek == DayOfWeek.Monday;
 		}
 
 		#region conversion
@@ -41,7 +42,8 @@ namespace Foosball.Models
 				Week = schedule.Week,
 				Date = schedule.Date,
 				HomeTeam = TeamViewModel.FromTeam(schedule.HomeTeam),
-				AwayTeam = TeamViewModel.FromTeam(schedule.AwayTeam)
+				AwayTeam = TeamViewModel.FromTeam(schedule.AwayTeam),
+				RequireScore = schedule.RequireScore
 			};
         }
 
@@ -53,7 +55,8 @@ namespace Foosball.Models
 				Week = Week,
 				Date = Date,
 				HomeTeamId = HomeTeam.Id,
-				AwayTeamId = AwayTeam.Id
+				AwayTeamId = AwayTeam.Id,
+				RequireScore = RequireScore
 			};
 		}
 

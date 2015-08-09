@@ -73,7 +73,7 @@
 						td.data('scheduleId', rowData.Schedule.Id);
 					},
 					render: function (data, type, row) {
-						if (row.ShowCombinedScore) {
+						if (row.Schedule.RequireScore) {
 							return '<div class="col-xs-6"><input type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
 						}
 						else {

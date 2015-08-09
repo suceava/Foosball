@@ -21,5 +21,6 @@ namespace Foosball.Entities
 		[Required]
 		public int AwayTeamId { get; set; }
 		public virtual Team AwayTeam { get; set; }
+		public bool RequireScore { get; set; }
 	}
 }
