@@ -18,6 +18,7 @@
 		$('#accountsTable').dataTable({
 			"ajax": _rootDir + 'account/listdata',
 			paging: false,
+			searching: false,
 			info: false,
 			order: [1, 'asc'],
 			createdRow: function(row, data, dataIndex) {

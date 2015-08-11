@@ -19,6 +19,7 @@
 		$('#picksTable').dataTable({
 			"ajax": _rootDir + 'picks/listdata' + location.search,
 			paging: false,
+			searching: false,
 			info: false,
 			order: [3, 'asc'],
 			columns: [
@@ -89,7 +90,9 @@
 		.on('click', 'td.pickable', function (e) {
 			savePick($(this));
 		})
-		.on('click', 'td.pickable span', function(e) {
+		.on('click', 'td.pickable span', function (e) {
+			e.stopPropagation();
+
 			savePick($(this).parent());
 		});
 
