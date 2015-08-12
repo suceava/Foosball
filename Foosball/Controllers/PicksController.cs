@@ -37,7 +37,7 @@ namespace Foosball.Controllers
 			{
 				picks.Add(new PickViewModel
 				{
-					CanPick = schedule.IsPickable(),
+					CanPick = schedule.IsPickable,
 					IsPick = false,
 
 					Schedule = schedule,
@@ -69,7 +69,7 @@ namespace Foosball.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "Schedule not found");
 			}
-			if (!schedule.IsPickable())
+			if (!schedule.IsPickable)
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Game is not pickable");
 			}

@@ -9,6 +9,7 @@
 			<th>Date</th>
 			<th>Home</th>
 			<th>Away</th>
+			<th>Locked</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -25,7 +26,8 @@
 				{ data: 'Week' },
 				{ data: 'Date' },
 				{ data: 'HomeTeam' },
-				{ data: 'AwayTeam' }
+				{ data: 'AwayTeam' },
+				{ data: 'IsPickable' }
 			],
 			columnDefs: [
 				{
@@ -42,6 +44,12 @@
 				},
 				{
 					targets: 4,
+					render: function (data, type, row) {
+						return '<div class="checkbox"><input type="checkbox" ' + (data ? '' : 'checked="checked"') + ' data-id="' + row.Id + '"/></div>';
+					}
+				},
+				{
+					targets: 5,
 					render: function (data, type, row) {
 						var edit = '<a href="' + _rootDir + 'schedules/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>',
 							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>';
@@ -63,6 +71,15 @@
 						window.location.reload();
 					});
 			}
+		});
+		$('#schedulesTable').on('click', 'input[type="checkbox"]', function (e) {
+			var chk = $(this),
+				id = chk.attr('data-id');
+
+			$.ajax({
+				url: _rootDir + '/schedules/lock/' + id + '?lockGame=' + chk.prop('checked'),
+				method: 'POST'
+			});
 		});
 	});
 </script>

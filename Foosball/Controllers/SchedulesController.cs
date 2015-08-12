@@ -68,6 +68,21 @@ namespace Foosball.Controllers
 		}
 
 		[HttpPost]
+		public ActionResult Lock(int id, bool lockGame)
+		{
+			var schedule = ScheduleViewModel.Get(id);
+			if (schedule == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+			}
+
+			schedule.IsPickable = !lockGame;
+			schedule.Save();
+
+			return Json(null);
+		}
+
+		[HttpPost]
 		public ActionResult Delete(int id)
 		{
 			var schedule = ScheduleViewModel.Get(id);

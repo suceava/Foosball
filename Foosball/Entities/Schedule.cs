@@ -22,5 +22,6 @@ namespace Foosball.Entities
 		public int AwayTeamId { get; set; }
 		public virtual Team AwayTeam { get; set; }
 		public bool RequireScore { get; set; }
+		public bool IsPickable { get; set; }
 	}
 }

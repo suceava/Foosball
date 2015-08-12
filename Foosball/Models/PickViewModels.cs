@@ -36,7 +36,7 @@ namespace Foosball.Models
 				PickHomeTeam = pick.PickHomeTeam,
 				CombinedScore = pick.CombinedScore,
 
-				CanPick = scheduleModel.IsPickable(),
+				CanPick = scheduleModel.IsPickable,
 				IsPick = true // coming from a Pick entry => must be a pick
 			};
 		}

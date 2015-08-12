@@ -25,11 +25,12 @@ namespace Foosball.Models
 		public TeamViewModel AwayTeam { get; set; }
 		[Display(Name = "Require Score")]
 		public bool RequireScore { get; set; }
+		[Display(Name = "Is Pickable")]
+		public bool IsPickable { get; set; }
 
-		public bool IsPickable()
+		public ScheduleViewModel()
 		{
-			// TODO: timezone
-			return Date > DateTime.Now;
+			IsPickable = true;
 		}
 
 		#region conversion
@@ -43,7 +44,8 @@ namespace Foosball.Models
 				Date = schedule.Date,
 				HomeTeam = TeamViewModel.FromTeam(schedule.HomeTeam),
 				AwayTeam = TeamViewModel.FromTeam(schedule.AwayTeam),
-				RequireScore = schedule.RequireScore
+				RequireScore = schedule.RequireScore,
+				IsPickable = schedule.IsPickable
 			};
         }
 
@@ -56,7 +58,8 @@ namespace Foosball.Models
 				Date = Date,
 				HomeTeamId = HomeTeam.Id,
 				AwayTeamId = AwayTeam.Id,
-				RequireScore = RequireScore
+				RequireScore = RequireScore,
+				IsPickable = IsPickable
 			};
 		}
 
