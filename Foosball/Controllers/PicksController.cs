@@ -82,6 +82,11 @@ namespace Foosball.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Game is not pickable");
 			}
+			if (!schedule.RequireScore)
+			{
+				// if game doesn't require a score, zero out the score
+				model.CombinedScore = 0;
+			}
 
 			#endregion
 
