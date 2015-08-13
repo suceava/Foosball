@@ -56,3 +56,12 @@ td.pickable {
 tr.user-role-guest {
 	background-color: #fee !important;
 }
+
+#rules ol li {
+	margin-bottom: 10px;
+}
+#rules ul {
+	list-style: none;
+	font-style: italic;
+	margin-top: 25px;
+}
