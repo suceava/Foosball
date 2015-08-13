@@ -48,6 +48,12 @@ namespace Foosball.Controllers
 				});
 			}
 
+			var tieBreaker = picks.Find(p => p.Schedule.RequireScore);
+			if (tieBreaker != null)
+			{
+				tieBreaker.GameDateDisplay = "TIE BREAKER - " + tieBreaker.GameDateDisplay;
+			}
+
             return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
 		}
 

@@ -106,13 +106,15 @@
 				var api = this.api(),
 					rows = api.rows({ page: 'current' }).nodes(),
 					last = null,
-					tieBreakerRow = '<tr class="group"><td colspan="3"><strong>TIE BREAKER</strong></td></tr>';
+					tieBreakerRow = '<tr><td colspan="3">&nbsp;</td></tr>';
  
 				api.column(1, { page: 'current' }).data().each(function (group, i) {
+					var lastRow = (i == rows.length - 1);
+
 					if (last !== group) {
 						$(rows).eq(i).before(
-							((i == rows.length - 1) ? tieBreakerRow : '') +
-							'<tr class="group"><td colspan="3">' + group + '</td></tr>'
+							(lastRow ? tieBreakerRow : '') +
+							'<tr class="group ' + (lastRow ? 'tie-breaker' : '') + '"><td colspan="3">' + group + '</td></tr>'
 						);
  
 						last = group;

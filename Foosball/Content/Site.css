@@ -64,6 +64,9 @@ tr.group {
     text-transform: uppercase;
     color: #666;
 }
+tr.tie-breaker {
+	font-weight: bold;
+}
 
 #rules ol li {
 	margin-bottom: 10px;
