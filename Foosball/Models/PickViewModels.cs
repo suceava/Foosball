@@ -17,6 +17,9 @@ namespace Foosball.Models
 		public bool? PickHomeTeam { get; set; }
 		public int? CombinedScore { get; set; }
 
+		public string GameDateDisplay { get; set; }
+		public string GameTimeDisplay { get; set; }
+
 		// indicates if user is allowed to pick this game
 		public bool CanPick { get; set; }
 		// indicates if it's a pick made by user or a un-picked scheduled game
@@ -35,6 +38,9 @@ namespace Foosball.Models
 				Schedule = scheduleModel,
 				PickHomeTeam = pick.PickHomeTeam,
 				CombinedScore = pick.CombinedScore,
+
+				GameDateDisplay = scheduleModel.Date.ToString("dddd, MMMM d"),
+				GameTimeDisplay = scheduleModel.Date.ToString("t") + " EST",
 
 				CanPick = scheduleModel.IsPickable,
 				IsPick = true // coming from a Pick entry => must be a pick

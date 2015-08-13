@@ -6,10 +6,11 @@
 <table id="picksTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
+			<th></th>
+			<th></th>
+			<th>Time</th>
 			<th>Home</th>
 			<th>Away</th>
-			<th>Combined Score</th>
-			<th>Date</th>
 		</tr>
 	</thead>
 </table>
@@ -19,18 +20,28 @@
 		$('#picksTable').dataTable({
 			"ajax": _rootDir + 'picks/listdata' + location.search,
 			paging: false,
-			searching: false,
+			ordering: false,
+			sorting: false,
 			info: false,
-			order: [3, 'asc'],
+			order: [],
 			columns: [
+				{ data: 'Schedule.Date' },
+				{ data: 'GameDateDisplay' },
+				{ data: 'GameTimeDisplay' },
 				{ data: 'Schedule.HomeTeam' },
-				{ data: 'Schedule.AwayTeam' },
-				{ data: 'CombinedScore' },
-				{ data: 'Schedule.Date' }
+				{ data: 'Schedule.AwayTeam' }
 			],
 			columnDefs: [
 				{
 					targets: 0,
+					visible: false
+				},
+				{
+					targets: 1,
+					visible: false
+				},
+				{
+					targets: 3,
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
 						td.data('scheduleId', rowData.Schedule.Id);
@@ -49,7 +60,7 @@
 					}
 				},
 				{
-					targets: 1,
+					targets: 4,
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
 						td.data('scheduleId', rowData.Schedule.Id);
@@ -63,26 +74,51 @@
 						}
 					},
 					render: function (data, type, row) {
-						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+
+						if (row.Schedule.RequireScore) {
+							dom += '<div class="col-xs-2" style="float:right"><input type="text" class="form-control" maxlength="3" value="' + (row.CombinedScore ? row.CombinedScore : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
+						}
+
+						//dom += '</div>'; // close the 'row'
+
+						return dom;
 					}
 				},
-				{
-					targets: 2,
-					width: '150px',
-					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-						var td = $(cell);
-						td.data('scheduleId', rowData.Schedule.Id);
-					},
-					render: function (data, type, row) {
-						if (row.Schedule.RequireScore) {
-							return '<div class="col-xs-6"><input type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
-						}
-						else {
-							return '';
-						}
+				//{
+				//	targets: 5,
+				//	width: '150px',
+				//	createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+				//		var td = $(cell);
+				//		td.data('scheduleId', rowData.Schedule.Id);
+				//	},
+				//	render: function (data, type, row) {
+				//		if (row.Schedule.RequireScore) {
+				//			return '<div class="col-xs-6"><input type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
+				//		}
+				//		else {
+				//			return '';
+				//		}
+				//	}
+				//}
+			],
+			drawCallback: function (settings) {
+				var api = this.api(),
+					rows = api.rows({ page: 'current' }).nodes(),
+					last = null,
+					tieBreakerRow = '<tr class="group"><td colspan="3"><strong>TIE BREAKER</strong></td></tr>';
+ 
+				api.column(1, { page: 'current' }).data().each(function (group, i) {
+					if (last !== group) {
+						$(rows).eq(i).before(
+							((i == rows.length - 1) ? tieBreakerRow : '') +
+							'<tr class="group"><td colspan="3">' + group + '</td></tr>'
+						);
+ 
+						last = group;
 					}
-				}
-			]
+				} );
+			}
 		});
 	});
 

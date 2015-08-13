@@ -40,12 +40,15 @@ namespace Foosball.Controllers
 					CanPick = schedule.IsPickable,
 					IsPick = false,
 
+					GameDateDisplay = schedule.Date.ToString("dddd, MMMM d"),
+					GameTimeDisplay = schedule.Date.ToString("t") + " EST",
+
 					Schedule = schedule,
 					User = user
 				});
 			}
 
-            return Json(new { data = picks.OrderBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]

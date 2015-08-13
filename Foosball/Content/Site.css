@@ -57,6 +57,14 @@ tr.user-role-guest {
 	background-color: #fee !important;
 }
 
+tr.group {
+	background-color: #ddd !important;
+	font-size: 12px;
+    font-family: NFLEndzoneTechBold,sans-serif;
+    text-transform: uppercase;
+    color: #666;
+}
+
 #rules ol li {
 	margin-bottom: 10px;
 }
