@@ -55,6 +55,28 @@ namespace Foosball.Controllers
 			}
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_userManager != null)
+				{
+					_userManager.Dispose();
+					_userManager = null;
+				}
+
+				if (_signInManager != null)
+				{
+					_signInManager.Dispose();
+					_signInManager = null;
+				}
+			}
+
+			base.Dispose(disposing);
+		}
+
+		#region ASP.NET Identity
+
 		// The Authorize Action is the end point which gets called when you access any
 		// protected Web API. If the user is not logged in then they will be redirected to 
 		// the Login page. After a successful login you can call a Web API.
@@ -260,6 +282,8 @@ namespace Foosball.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
+		#endregion
+
 		[HttpGet]
 		public ActionResult List()
 		{
@@ -272,7 +296,10 @@ namespace Foosball.Controllers
 			return Json(new { data = UserListViewModel.GetList() }, JsonRequestBehavior.AllowGet);
         }
 
+		#region user list actions
+
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public ActionResult SecurityUp(string id)
 		{
 			#region validate
@@ -305,6 +332,7 @@ namespace Foosball.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public ActionResult SecurityDown(string id)
 		{
 			#region validate
@@ -336,25 +364,33 @@ namespace Foosball.Controllers
 			return Json(null);
 		}
 
-		protected override void Dispose(bool disposing)
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public ActionResult Delete(string id)
 		{
-			if (disposing)
-			{
-				if (_userManager != null)
-				{
-					_userManager.Dispose();
-					_userManager = null;
-				}
+			#region validate
 
-				if (_signInManager != null)
-				{
-					_signInManager.Dispose();
-					_signInManager = null;
-				}
+			var userId = User.Identity.GetUserId();
+			if (userId == id)
+			{
+				// cannot delete myself
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "You cannot delete yourself");
 			}
 
-			base.Dispose(disposing);
+			var user = UserManager.FindById(id);
+			if (user == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "User not found");
+			}
+
+			#endregion
+
+			UserManager.Delete(user);
+
+			return Json(null);
 		}
+
+		#endregion
 
 		#region Helpers
 		// Used for XSRF protection when adding external logins

@@ -48,12 +48,17 @@
 					targets: 5,
 					sortable: false,
 					render: function (data, type, row) {
-						var edit = '<a href="' + _rootDir + 'accounts/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>',
-							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>',
-							secUp = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-up" data-id="' + row.Id + '"></a>',
-							secDown = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-down" data-id="' + row.Id + '"></a>';
+						var edit = '<a href="' + _rootDir + 'accounts/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a> ',
+							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '" title="Delete user"></a> ',
+							secUp = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-up" data-id="' + row.Id + '" title="Promote user"></a> ',
+							secDown = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-down" data-id="' + row.Id + '" title="Demote user"></a> ',
+							spacer = '<span class="glyphicon glyphicon-spacer"></span> '
+							dom = '';
 
-						return (row.Role == 'Guest') ? secUp : (row.Role == 'User') ? secDown : '';
+						dom += (row.Role == 'Guest') ? secUp : (row.Role == 'User') ? secDown : spacer;
+						dom += del;
+
+						return dom;
 					}
 				}
 			]
@@ -79,6 +84,19 @@
 					url: _rootDir + 'account/securitydown/' + id,
 					method: 'POST'
 				})
+					.always(function () {
+						window.location.reload();
+					});
+			}
+		});
+
+		$('#accountsTable').on('click', 'a.glyphicon-remove-circle', function (e) {
+			var id = $(this).attr('data-id');
+			if (confirm('Are you sure you want to delete the user?')) {
+				$.ajax({
+						url: _rootDir + '/account/delete/' + id,
+						method: 'POST'
+					})
 					.always(function () {
 						window.location.reload();
 					});

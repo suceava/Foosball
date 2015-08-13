@@ -36,6 +36,11 @@ textarea {
     }
 }
 
+.glyphicon-spacer {
+	width: 14px;
+	height: 14px;
+}
+
 .team-logo-small {
 	width: 40px;
 	height: 27px;
