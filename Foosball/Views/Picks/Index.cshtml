@@ -1,7 +1,31 @@
 ﻿@model List<Foosball.Models.PickViewModel>
 
-<h2>Week @ViewBag.CurrentWeek</h2>
-<h6>Click a team to pick it</h6>
+<div class="row">
+	<div class="col-md-5">
+		<h2>Week @ViewBag.CurrentWeek @(ViewBag.IsMaster ? "Master" : "") Picks</h2>
+		<h6>Click a team to pick it</h6>
+	</div>
+	<div class="col-md-7 right">
+		<nav class="picks-nav">
+			<ul class="pagination">
+				@for (int i = 1; i <= ViewBag.CurrentWeek; i++)
+				{
+					<li class="@(i == ViewBag.Week ? "active" : "")">
+						@if (ViewBag.IsMaster)
+						{
+							<a href="@Url.Action("", new { week = i, isMaster = ViewBag.IsMaster })">@i</a>
+						}
+						else
+						{
+							// don't want isMaster to show up for non-admin
+							<a href="@Url.Action("", new { week = i })">@i</a>
+						}
+					</li>
+				}
+			</ul>
+		</nav>
+	</div>
+</div>
 
 <table id="picksTable" class="row-border" cellspacing="0">
 	<thead>
@@ -9,8 +33,10 @@
 			<th></th>
 			<th></th>
 			<th>Time</th>
-			<th>Home</th>
 			<th>Away</th>
+			<th></th>
+			<th>Home</th>
+			<th></th>
 		</tr>
 	</thead>
 </table>
@@ -22,14 +48,17 @@
 			paging: false,
 			ordering: false,
 			sorting: false,
+			searching: false,
 			info: false,
 			order: [],
 			columns: [
 				{ data: 'Schedule.Date' },
 				{ data: 'GameDateDisplay' },
 				{ data: 'GameTimeDisplay' },
+				{ data: 'Schedule.AwayTeam' },
+				{ data: '' },
 				{ data: 'Schedule.HomeTeam' },
-				{ data: 'Schedule.AwayTeam' }
+				{ data: 'CanPick' }
 			],
 			columnDefs: [
 				{
@@ -42,25 +71,7 @@
 				},
 				{
 					targets: 3,
-					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-						var td = $(cell);
-						td.data('scheduleId', rowData.Schedule.Id);
-						td.data('isHomeTeam', true);
-
-						if (rowData.IsPick && rowData.PickHomeTeam)
-						{
-							td.addClass('picked');
-						}
-						if (rowData.CanPick) {
-							td.addClass('pickable');
-						}
-					},
-					render: function (data, type, row) {
-						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
-					}
-				},
-				{
-					targets: 4,
+					class: 'column-right',
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
 						td.data('scheduleId', rowData.Schedule.Id);
@@ -74,39 +85,60 @@
 						}
 					},
 					render: function (data, type, row) {
-						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
-
-						if (row.Schedule.RequireScore) {
-							dom += '<div class="col-xs-2" style="float:right"><input type="text" class="form-control" maxlength="3" value="' + (row.CombinedScore ? row.CombinedScore : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
-						}
-
-						//dom += '</div>'; // close the 'row'
+						var dom = '<span class="team-name-list">' + data.Name.toUpperCase() + '</span><img class="team-logo-small" src="' + data.ImageUrl + '"/>';
 
 						return dom;
 					}
 				},
-				//{
-				//	targets: 5,
-				//	width: '150px',
-				//	createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-				//		var td = $(cell);
-				//		td.data('scheduleId', rowData.Schedule.Id);
-				//	},
-				//	render: function (data, type, row) {
-				//		if (row.Schedule.RequireScore) {
-				//			return '<div class="col-xs-6"><input type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
-				//		}
-				//		else {
-				//			return '';
-				//		}
-				//	}
-				//}
+				{
+					targets: 4,
+					class: 'column-center',
+					render: function () {
+						return '<span class="column-at">AT</span>';
+					}
+				},
+				{
+					targets: 5,
+					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+						var td = $(cell);
+						td.data('scheduleId', rowData.Schedule.Id);
+						td.data('isHomeTeam', true);
+
+						if (rowData.IsPick && rowData.PickHomeTeam) {
+							td.addClass('picked');
+						}
+						if (rowData.CanPick) {
+							td.addClass('pickable');
+						}
+					},
+					render: function (data, type, row) {
+						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+
+						if (row.Schedule.RequireScore) {
+							dom += '<div class="col-xs-3" style="float:right"><input type="text" class="form-control" maxlength="3" value="' + (row.CombinedScore ? row.CombinedScore : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
+						}
+
+						return dom;
+					}
+				},
+				{
+					targets: 6,
+					width: '20px',
+					render: function (data, type, row) {
+						return data ? '' : '<span class="glyphicon glyphicon-lock"></span>';
+					}
+				}
 			],
+			rowCallback: function (row, data, index) {
+				if (!data.CanPick) {
+					$(row).addClass('locked');
+				}
+			},
 			drawCallback: function (settings) {
 				var api = this.api(),
 					rows = api.rows({ page: 'current' }).nodes(),
 					last = null,
-					tieBreakerRow = '<tr><td colspan="3">&nbsp;</td></tr>';
+					tieBreakerRow = '<tr><td colspan="5">&nbsp;</td></tr>';
  
 				api.column(1, { page: 'current' }).data().each(function (group, i) {
 					var lastRow = (i == rows.length - 1);
@@ -114,7 +146,7 @@
 					if (last !== group) {
 						$(rows).eq(i).before(
 							(lastRow ? tieBreakerRow : '') +
-							'<tr class="group ' + (lastRow ? 'tie-breaker' : '') + '"><td colspan="3">' + group + '</td></tr>'
+							'<tr class="group ' + (lastRow ? 'tie-breaker' : '') + '"><td colspan="5">' + group + '</td></tr>'
 						);
  
 						last = group;
@@ -127,6 +159,10 @@
 	$('#picksTable')
 		.on('click', 'td.pickable', function (e) {
 			savePick($(this));
+		})
+		.on('click', 'td.pickable input', function (e) {
+			// clicking on input box should not select anything
+			e.stopPropagation();
 		})
 		.on('click', 'td.pickable span', function (e) {
 			e.stopPropagation();
@@ -186,7 +222,7 @@
 	function save(scheduleId, isHomeTeam, combinedScore) {
 		// save the pick
 		$.ajax({
-			url: _rootDir + 'picks/pick',
+			url: _rootDir + 'picks/pick@(ViewBag.IsMaster ? "?isMaster=true" : "")',
 			method: 'POST',
 			data: {
 				PickHomeTeam: isHomeTeam,

@@ -1,10 +1,18 @@
-﻿@section SPAViews {
+﻿@using Foosball.Extensions;
+
+@section SPAViews {
     @Html.Partial("_Home")
 }
 @section Scripts{
     @*@Scripts.Render("~/bundles/knockout")
     @Scripts.Render("~/bundles/app")*@
 }
+
+<div id="welcome" class="panel panel-default">
+	<div class="panel-body">
+		<h1>Welcome @User.FirstName()</h1>
+	</div>
+</div>
 
 <div id="rules" class="panel panel-default">
 	<div class="panel-heading">

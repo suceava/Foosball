@@ -12,25 +12,38 @@ namespace Foosball.Controllers
 {
 	[Authorize(Roles = "Admin,User")]
 	public class PicksController : BaseController
-    {
-        [HttpGet]
-        public ActionResult Index(int? week)
-        {
-			ViewBag.CurrentWeek = week ?? SchedulesDb.GetCurrentWeek();
-            return View();
-        }
+	{
+		[HttpGet]
+		public ActionResult Index(int? week, bool? isMaster)
+		{
+			ViewBag.CurrentWeek = SchedulesDb.GetCurrentWeek();
+			ViewBag.Week = week.GetValueOrDefault(SchedulesDb.GetCurrentWeek());
+			ViewBag.IsMaster = isMaster.GetValueOrDefault(false);
+
+			return View();
+		}
 
 		[HttpGet]
-		public ActionResult ListData(int? week)
+		public ActionResult ListData(int? week, bool? isMaster)
 		{
-			var userId = User.Identity.GetUserId();
+			#region validation
+
+			if (!User.IsInRole("Admin"))
+			{
+				isMaster = null;
+			}
+
+			#endregion
+
+			var userId = (isMaster.GetValueOrDefault(false) ? Guid.Empty.ToString() : User.Identity.GetUserId());
 			var user = new UserListViewModel();
-			var currentWeek = week ?? SchedulesDb.GetCurrentWeek();
+			var currentWeek = SchedulesDb.GetCurrentWeek();
+			var picksWeek = week.GetValueOrDefault(currentWeek);
 
 			// picks already mad
-			var picks = PickViewModel.GetListForUser(userId, currentWeek);
+			var picks = PickViewModel.GetListForUser(userId, picksWeek);
 			// full schedule for this week
-			var schedules = ScheduleViewModel.GetList(currentWeek);
+			var schedules = ScheduleViewModel.GetList(picksWeek);
 
 			// add all missing schedules to the picks list
 			foreach (var schedule in schedules.Where(s => !picks.Exists(p => p.Schedule.Id == s.Id)))
@@ -54,15 +67,31 @@ namespace Foosball.Controllers
 				tieBreaker.GameDateDisplay = "TIE BREAKER - " + tieBreaker.GameDateDisplay;
 			}
 
-            return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
+			if (isMaster.GetValueOrDefault(false))
+			{
+				// for master pick, always allow picking
+				picks.ForEach(p => p.CanPick = true);
+			}
+			else if (picksWeek > currentWeek)
+			{
+				// if looking at future picks, don't allow picking
+				picks.ForEach(p => p.CanPick = false);
+			}
+
+			return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]
-		public ActionResult Pick(PickViewModel model)
+		public ActionResult Pick(PickViewModel model, bool? isMaster)
 		{
-			var userId = User.Identity.GetUserId();
-
 			#region validation
+
+			if (!User.IsInRole("Admin"))
+			{
+				isMaster = null;
+			}
+
+			var userId = (isMaster.GetValueOrDefault(false) ? Guid.Empty.ToString() : User.Identity.GetUserId());
 
 			if (model == null)
 			{
@@ -78,7 +107,7 @@ namespace Foosball.Controllers
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "Schedule not found");
 			}
-			if (!schedule.IsPickable)
+			if (!schedule.IsPickable && !isMaster.GetValueOrDefault(false) || schedule.Week > SchedulesDb.GetCurrentWeek())
 			{
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Game is not pickable");
 			}

@@ -14,15 +14,18 @@ namespace Foosball.Controllers
     public class SchedulesController : BaseController
     {
 		[HttpGet]
-		public ActionResult Index()
+		public ActionResult Index(int? week)
 		{
+			ViewBag.MaxWeek = SchedulesDb.GetWeekCount();
+			ViewBag.Week = week;
+
 			return View();
 		}
 
 		[HttpGet]
-		public ActionResult ListData()
+		public ActionResult ListData(int? week)
 		{
-			return Json(new { data = ScheduleViewModel.GetList() }, JsonRequestBehavior.AllowGet);
+			return Json(new { data = ScheduleViewModel.GetList(week) }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpGet]
@@ -64,7 +67,7 @@ namespace Foosball.Controllers
 
 			schedule.Save();
 
-			return RedirectToAction("Index");
+			return RedirectToAction("Index", new { week = schedule.Week });
 		}
 
 		[HttpPost]

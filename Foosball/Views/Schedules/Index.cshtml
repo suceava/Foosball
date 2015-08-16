@@ -1,14 +1,30 @@
 ﻿@model List<Foosball.Models.ScheduleViewModel>
 
-<a href="@Url.Content("~/schedules/edit/0")" class="btn btn-default">Add Schedule</a>
+<div class="row">
+	<div class="col-md-5">
+		<a href="@Url.Content("~/schedules/edit/0")" class="btn btn-default">Add Schedule</a>
+	</div>
+	<div class="col-md-7 right">
+		<nav class="picks-nav">
+			<ul class="pagination">
+				@for (int i = 1; i <= ViewBag.MaxWeek; i++)
+				{
+					<li class="@(i == ViewBag.Week ? "active" : "")"><a href="@Url.Action("", new { week = i })">@i</a></li>
+				}
+			</ul>
+		</nav>
+	</div>
+</div>
 
 <table id="schedulesTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
 			<th>Week</th>
+			<th></th>
 			<th>Date</th>
-			<th>Home</th>
 			<th>Away</th>
+			<th></th>
+			<th>Home</th>
 			<th>Locked</th>
 			<th></th>
 		</tr>
@@ -18,38 +34,64 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#schedulesTable').dataTable({
-			"ajax": _rootDir + 'schedules/listdata',
+			"ajax": _rootDir + 'schedules/listdata' + location.search,
 			paging: false,
 			searching: false,
 			info: false,
+			order: [[0, 'desc']],
 			columns: [
 				{ data: 'Week' },
 				{ data: 'Date' },
-				{ data: 'HomeTeam' },
+				{ data: 'DateDisplay' },
 				{ data: 'AwayTeam' },
+				{ data: '' },
+				{ data: 'HomeTeam' },
 				{ data: 'IsPickable' }
 			],
 			columnDefs: [
 				{
+					// date
+					targets: 1,
+					visible: false
+				},
+				{
+					// date display
 					targets: 2,
-					render: function (data, type, row) {
-						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
-					}
+					orderData: [1]
 				},
 				{
+					// away team
 					targets: 3,
+					class: 'column-right',
+					render: function (data, type, row) {
+						return '<span class="team-name-list">' + data.Name.toUpperCase() + '</span><img class="team-logo-small" src="' + data.ImageUrl + '"/>';
+					}
+				},
+				{
+					// AT
+					targets: 4,
+					class: 'column-center',
+					render: function () {
+						return '<span class="column-at">AT</span>';
+					}
+				},
+				{
+					// home team
+					targets: 5,
 					render: function (data, type, row) {
 						return '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
 					}
 				},
 				{
-					targets: 4,
+					// locked
+					targets: 6,
 					render: function (data, type, row) {
 						return '<div class="checkbox"><input type="checkbox" ' + (data ? '' : 'checked="checked"') + ' data-id="' + row.Id + '"/></div>';
 					}
 				},
 				{
-					targets: 5,
+					// actions menu
+					targets: 7,
 					render: function (data, type, row) {
 						var edit = '<a href="' + _rootDir + 'schedules/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a>',
 							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '"></a>';

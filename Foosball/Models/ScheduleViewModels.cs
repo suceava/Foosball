@@ -28,6 +28,8 @@ namespace Foosball.Models
 		[Display(Name = "Is Pickable")]
 		public bool IsPickable { get; set; }
 
+		public string DateDisplay { get; set; }
+
 		public ScheduleViewModel()
 		{
 			IsPickable = true;
@@ -45,7 +47,9 @@ namespace Foosball.Models
 				HomeTeam = TeamViewModel.FromTeam(schedule.HomeTeam),
 				AwayTeam = TeamViewModel.FromTeam(schedule.AwayTeam),
 				RequireScore = schedule.RequireScore,
-				IsPickable = schedule.IsPickable
+				IsPickable = schedule.IsPickable,
+
+				DateDisplay = schedule.Date.ToString("dddd, MMMM d") + " at " + schedule.Date.ToString("h:mm tt") + " EST"
 			};
         }
 

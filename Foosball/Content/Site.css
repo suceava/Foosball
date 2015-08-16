@@ -41,6 +41,19 @@ textarea {
 	height: 14px;
 }
 
+table {
+    font-family: NFLEndzoneTechBold,sans-serif;
+}
+.column-at {
+	font-size: 12px;
+}
+.column-center {
+	text-align: center;
+}
+.column-right {
+	text-align: right;
+}
+
 .team-logo-small {
 	width: 40px;
 	height: 27px;
@@ -52,20 +65,27 @@ textarea {
 }
 td.picked {
 	font-weight: bold;
-	color: darkseagreen;
-	background-color: #eeeeff !important;
+	color: #00f;
+	/*background-color: #f0ffff !important;*/
 }
 td.pickable {
 	cursor: pointer;
 }
+td.pickable:hover {
+	background-color: #f0ffff;
+}
 tr.user-role-guest {
 	background-color: #fee !important;
+}
+tr.locked {
+	background-color: #f8f8f8 !important;
+	color: #aaa;
+	font-style: italic;
 }
 
 tr.group {
 	background-color: #ddd !important;
 	font-size: 12px;
-    font-family: NFLEndzoneTechBold,sans-serif;
     text-transform: uppercase;
     color: #666;
 }
@@ -80,4 +100,7 @@ tr.tie-breaker {
 	list-style: none;
 	font-style: italic;
 	margin-top: 25px;
+}
+.picks-nav {
+	float: right;
 }

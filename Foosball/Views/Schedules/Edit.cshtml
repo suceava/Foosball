@@ -27,18 +27,18 @@
         </div>
 
 		<div class="form-group">
-			@Html.LabelFor(model => model.HomeTeam, htmlAttributes: new { @class = "control-label col-md-2" })
+			@Html.LabelFor(model => model.AwayTeam, htmlAttributes: new { @class = "control-label col-md-2" })
 			<div class="col-md-10">
-				@Html.DropDownListFor(model => model.HomeTeam.Id,
+				@Html.DropDownListFor(model => model.AwayTeam.Id,
 					((List<Foosball.Models.TeamViewModel>)ViewData["Teams"]).Select(t => new SelectListItem() { Text = t.Name, Value = t.Id.ToString() }),
 					new { @class = "form-control" })
 			</div>
 		</div>
 
 		<div class="form-group">
-			@Html.LabelFor(model => model.AwayTeam, htmlAttributes: new { @class = "control-label col-md-2" })
+			@Html.LabelFor(model => model.HomeTeam, htmlAttributes: new { @class = "control-label col-md-2" })
 			<div class="col-md-10">
-				@Html.DropDownListFor(model => model.AwayTeam.Id,
+				@Html.DropDownListFor(model => model.HomeTeam.Id,
 					((List<Foosball.Models.TeamViewModel>)ViewData["Teams"]).Select(t => new SelectListItem() { Text = t.Name, Value = t.Id.ToString() }),
 					new { @class = "form-control" })
 			</div>

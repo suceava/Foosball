@@ -34,7 +34,7 @@ namespace Foosball.Models
 			return new PickViewModel()
 			{
 				Id = pick.Id,
-				User = UserListViewModel.FromUser(pick.User),
+				User = (pick.UserId == Guid.Empty.ToString() ? new UserListViewModel { Id = pick.UserId } : UserListViewModel.FromUser(pick.User)),
 				Schedule = scheduleModel,
 				PickHomeTeam = pick.PickHomeTeam,
 				CombinedScore = pick.CombinedScore,

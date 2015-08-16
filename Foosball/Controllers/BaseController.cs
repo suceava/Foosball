@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Foosball.Entities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,11 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 
 namespace Foosball.Controllers
 {
 	public abstract class BaseController : Controller
 	{
+		protected User CurrentUser
+		{
+			get
+			{
+				return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(User.Identity.GetUserId());
+			}
+		}
+
 		protected override JsonResult Json(object data, string contentType, Encoding contentEncoding, JsonRequestBehavior behavior)
 		{
 			return new JsonNetResult
