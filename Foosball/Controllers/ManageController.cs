@@ -75,15 +75,11 @@ namespace Foosball.Controllers
 			return View(model);
 		}
 
-		//
-		// GET: /Manage/ChangePassword
 		public ActionResult ChangePassword()
 		{
 			return View();
 		}
 
-		//
-		// POST: /Manage/ChangePassword
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)

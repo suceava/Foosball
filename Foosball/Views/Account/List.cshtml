@@ -48,13 +48,15 @@
 					targets: 5,
 					sortable: false,
 					render: function (data, type, row) {
-						var edit = '<a href="' + _rootDir + 'accounts/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a> ',
+						var edit = '<a href="' + _rootDir + 'account/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a> ',
 							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '" title="Delete user"></a> ',
 							secUp = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-up" data-id="' + row.Id + '" title="Promote user"></a> ',
 							secDown = '<a href="javascript:void(0);" class="glyphicon glyphicon-chevron-down" data-id="' + row.Id + '" title="Demote user"></a> ',
+							pwd = '<a href="' + _rootDir + 'account/setpassword/' + row.Id + '" class="glyphicon glyphicon-lock" title="Set Password"></a> ',
 							spacer = '<span class="glyphicon glyphicon-spacer"></span> '
 							dom = '';
 
+						dom += pwd;
 						dom += (row.Role == 'Guest') ? secUp : (row.Role == 'User') ? secDown : spacer;
 						dom += del;
 
