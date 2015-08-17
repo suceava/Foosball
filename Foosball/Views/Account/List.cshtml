@@ -8,6 +8,7 @@
 			<th>Last Name</th>
 			<th>Email</th>
 			<th>Role</th>
+			<th>$$</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -31,7 +32,8 @@
 				{ data: 'FirstName' },
 				{ data: 'LastName' },
 				{ data: 'Email' },
-				{ data: 'Role' }
+				{ data: 'Role' },
+				{ data: 'Winnings' }
 			],
 			columnDefs: [
 				{
@@ -46,7 +48,16 @@
 				},
 				{
 					targets: 5,
+					width: '75px',
 					sortable: false,
+					render: function (data, type, row) {
+						return '<div><input type="text" class="form-control" maxlength="6" value="' + data + '" data-id="' + row.Id + '" /></div>';
+					}
+				},
+				{
+					targets: 6,
+					sortable: false,
+					width: '75px',
 					render: function (data, type, row) {
 						var edit = '<a href="' + _rootDir + 'account/edit/' + row.Id + '" class="glyphicon glyphicon-pencil"></a> ',
 							del = '<a href="javascript:void(0);" class="glyphicon glyphicon-remove-circle" data-id="' + row.Id + '" title="Delete user"></a> ',
@@ -105,5 +116,53 @@
 			}
 		});
 
+		$('#accountsTable')
+			.on('keyup', 'input.form-control', function () {
+				clearTimeout($.data(this, 'timer'));
+				var wait = setTimeout(saveWinnings, 500, $(this));
+				$(this).data('timer', wait);
+			});
+
 	});
+
+	function saveWinnings(input) {
+		var div = input.parent(),
+			td = div.parent(),
+			tr = td.parent(),
+			id = input.attr('data-id'),
+			winnings = input.val();
+
+		div.removeClass('has-error');
+
+		if (!$.isNumeric(winnings)) {
+			div.addClass('has-error');
+			return;
+		}
+
+		try {
+			winnings = parseFloat(winnings, 10);
+		}
+		catch (ex) {
+			div.addClass('has-error');
+			return;
+		}
+
+		if (winnings < 0) {
+			div.addClass('has-error');
+			return;
+		}
+
+		// save the winnings
+		$.ajax({
+			url: _rootDir + 'account/winnings/' + id,
+			method: 'POST',
+			data: {
+				winnings: winnings
+			},
+			success: function (e) {
+				console.log('winnings saved');
+			}
+		});
+
+	}
 </script>

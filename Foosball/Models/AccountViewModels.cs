@@ -18,6 +18,7 @@ namespace Foosball.Models
 		public string Email { get; set; }
 		public string ImageUrl { get; set; }
 		public string Role { get; set; }
+		public double Winnings { get; set; }
 
 		#region conversion
 
@@ -42,7 +43,8 @@ namespace Foosball.Models
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				ImageUrl = user.ImageUrl,
-				Role = role
+				Role = role,
+				Winnings = user.Winnings
 			};
 		}
 

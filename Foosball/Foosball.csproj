@@ -358,7 +358,6 @@
     <Folder Include="Areas\" />
     <Folder Include="Filters\" />
     <Folder Include="Results\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

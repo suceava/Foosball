@@ -18,6 +18,7 @@ namespace Foosball.Entities
 		public string LastName { get; set; }
 		[StringLength(1000)]
 		public string ImageUrl { get; set; }
+		public double Winnings { get; set; }
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
 		{

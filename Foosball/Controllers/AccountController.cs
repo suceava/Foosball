@@ -442,6 +442,27 @@ namespace Foosball.Controllers
 			return View();
 		}
 
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public ActionResult Winnings(string id, double winnings)
+		{
+			#region validation
+
+
+			var user = UserManager.FindById(id);
+			if (user == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "User not found");
+			}
+
+			#endregion
+
+			user.Winnings = winnings;
+			UserManager.Update(user);
+
+			return Json(null);
+		}
+
 		#endregion
 
 		#region Helpers
