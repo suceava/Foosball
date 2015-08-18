@@ -12,6 +12,7 @@ namespace Foosball.Controllers
 		public ActionResult Index()
 		{
 			ViewBag.Winnings = CurrentUser != null ? CurrentUser.Winnings : 0;
+			ViewBag.FullName = CurrentUser.FirstName + " " + CurrentUser.LastName;
 
 			return View();
 		}

@@ -10,7 +10,7 @@
 
 <div id="welcome" class="panel panel-default">
 	<div class="panel-body">
-		<h1>Welcome @User.FirstName()</h1>
+		<h1>Welcome @ViewBag.FullName</h1>
 		@if (ViewBag.Winnings > 0)
 		{
 			<h4>You have won a total of @ViewBag.Winnings.ToString("c")</h4>

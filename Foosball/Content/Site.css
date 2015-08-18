@@ -65,8 +65,8 @@ table {
 }
 td.picked {
 	font-weight: bold;
-	color: #00f;
-	/*background-color: #f0ffff !important;*/
+	color: #000;
+	background-color: #f6f6f6 !important;
 }
 td.pickable {
 	cursor: pointer;
@@ -78,7 +78,7 @@ tr.user-role-guest {
 	background-color: #fee !important;
 }
 tr.locked {
-	background-color: #f8f8f8 !important;
+	background-color: #f9f9f9 !important;
 	color: #aaa;
 	font-style: italic;
 }
