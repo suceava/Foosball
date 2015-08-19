@@ -64,7 +64,7 @@ namespace Foosball.Controllers
 			var tieBreaker = picks.Find(p => p.Schedule.RequireScore);
 			if (tieBreaker != null)
 			{
-				tieBreaker.GameDateDisplay = "TIE BREAKER - " + tieBreaker.GameDateDisplay;
+				tieBreaker.GameDateDisplay = " " + tieBreaker.GameDateDisplay;
 			}
 
 			if (isMaster.GetValueOrDefault(false))

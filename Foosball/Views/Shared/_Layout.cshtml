@@ -34,7 +34,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })</li>
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
 					@if (User.IsInRole("User") || User.IsAdmin())
 					{
 						<li>@Html.ActionLink("Picks", "Index", "Picks", new { area = "" }, null)</li>

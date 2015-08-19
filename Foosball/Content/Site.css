@@ -74,6 +74,10 @@ td.pickable {
 td.pickable:hover {
 	background-color: #f0ffff;
 }
+td.total-points input {
+	border-color: blue;
+}
+
 tr.user-role-guest {
 	background-color: #fee !important;
 }
@@ -82,7 +86,6 @@ tr.locked {
 	color: #aaa;
 	font-style: italic;
 }
-
 tr.group {
 	background-color: #ddd !important;
 	font-size: 12px;

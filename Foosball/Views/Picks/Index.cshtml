@@ -37,6 +37,7 @@
 			<th></th>
 			<th>Home</th>
 			<th></th>
+			<th></th>
 		</tr>
 	</thead>
 </table>
@@ -58,6 +59,7 @@
 				{ data: 'Schedule.AwayTeam' },
 				{ data: '' },
 				{ data: 'Schedule.HomeTeam' },
+				{ data: 'CombinedScore' },
 				{ data: 'CanPick' }
 			],
 			columnDefs: [
@@ -113,16 +115,22 @@
 					},
 					render: function (data, type, row) {
 						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
-
-						if (row.Schedule.RequireScore) {
-							dom += '<div class="col-xs-3" style="float:right"><input type="text" class="form-control" maxlength="3" value="' + (row.CombinedScore ? row.CombinedScore : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
-						}
-
 						return dom;
 					}
 				},
 				{
 					targets: 6,
+					width: '75px',
+					class: 'total-points',
+					render: function (data, type, row) {
+						if (!row.Schedule.RequireScore) {
+							return '';
+						}
+						return '<input placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' />';
+					}
+				},
+				{
+					targets: 7,
 					width: '20px',
 					render: function (data, type, row) {
 						return data ? '' : '<span class="glyphicon glyphicon-lock"></span>';
@@ -138,15 +146,16 @@
 				var api = this.api(),
 					rows = api.rows({ page: 'current' }).nodes(),
 					last = null,
-					tieBreakerRow = '<tr><td colspan="5">&nbsp;</td></tr>';
+					tieBreakerRow = '<tr><td colspan="6">&nbsp;</td></tr>';
  
 				api.column(1, { page: 'current' }).data().each(function (group, i) {
 					var lastRow = (i == rows.length - 1);
 
 					if (last !== group) {
 						$(rows).eq(i).before(
-							(lastRow ? tieBreakerRow : '') +
-							'<tr class="group ' + (lastRow ? 'tie-breaker' : '') + '"><td colspan="5">' + group + '</td></tr>'
+							(lastRow ?
+								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="4">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
+								'<tr class="group"><td colspan="6">' + group + '</td></tr>')
 						);
  
 						last = group;
