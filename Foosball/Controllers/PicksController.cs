@@ -78,7 +78,7 @@ namespace Foosball.Controllers
 				picks.ForEach(p => p.CanPick = false);
 			}
 
-			return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ToList() }, JsonRequestBehavior.AllowGet);
+			return Json(new { data = picks.OrderBy(p => p.Schedule.RequireScore).ThenBy(p => p.Schedule.Date).ThenBy(p => p.Schedule.Id).ToList() }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]
@@ -142,6 +142,16 @@ namespace Foosball.Controllers
 			pick.Save();
 
 			return Json(pick.Id);
+		}
+
+		[HttpGet]
+		public ActionResult All(int? week)
+		{
+			var currentWeek = SchedulesDb.GetCurrentWeek();
+			var picksWeek = week.GetValueOrDefault(currentWeek);
+
+
+			return View(AllPicksViewModel.GetListForWeek(picksWeek));
 		}
 	}
 }

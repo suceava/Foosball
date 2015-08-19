@@ -353,6 +353,7 @@
     <Content Include="Views\Schedules\Edit.cshtml" />
     <Content Include="Views\Picks\Index.cshtml" />
     <Content Include="Views\Account\SetPassword.cshtml" />
+    <Content Include="Views\Picks\All.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\" />

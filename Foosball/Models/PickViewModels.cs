@@ -34,7 +34,7 @@ namespace Foosball.Models
 			return new PickViewModel()
 			{
 				Id = pick.Id,
-				User = (pick.UserId == Guid.Empty.ToString() ? new UserListViewModel { Id = pick.UserId } : UserListViewModel.FromUser(pick.User)),
+				User = (pick.UserId == Pick.MASTER_PICKS_USER_ID ? new UserListViewModel { Id = pick.UserId } : UserListViewModel.FromUser(pick.User)),
 				Schedule = scheduleModel,
 				PickHomeTeam = pick.PickHomeTeam,
 				CombinedScore = pick.CombinedScore,
@@ -71,6 +71,11 @@ namespace Foosball.Models
 			return GetFilteredList(userId: userId, week: week);
 		}
 
+		public static List<PickViewModel> GetListForWeek(int week)
+		{
+			return GetFilteredList(week: week);
+		}
+
 		private static List<PickViewModel> GetFilteredList(int? id = null, string userId = null, int? week = null, int? scheduleId = null)
 		{
 			var predicate = PredicateBuilder.True<Pick>();
@@ -93,7 +98,15 @@ namespace Foosball.Models
 
 			using (var db = new PicksDb())
 			{
-				return db.Picks.Include("Schedule").OrderBy(p => p.Schedule.Date).AsExpandable().Where(predicate).ToList().Select(p => PickViewModel.FromPick(p)).ToList();
+				return db.Picks
+					.Include("Schedule")
+					.OrderBy(p => p.Schedule.Date)
+					.ThenBy(p => p.ScheduleId)
+					.AsExpandable()
+					.Where(predicate)
+					.ToList()
+					.Select(p => PickViewModel.FromPick(p))
+					.ToList();
 			}
 		}
 
@@ -109,4 +122,67 @@ namespace Foosball.Models
 			}
 		}
 	}
+
+	public class AllPicksViewModel
+	{
+		public UserListViewModel User { get; set; }
+		public Dictionary<int, TeamViewModel> PickedTeams { get; }
+
+		public AllPicksViewModel()
+		{
+			PickedTeams = new Dictionary<int, TeamViewModel>();
+		}
+
+		public static List<AllPicksViewModel> GetListForWeek(int week)
+		{
+			// get schedules for the week
+			var schedules = ScheduleViewModel.GetList(week);
+
+			// get all the picks for the week
+			var allPicks = PickViewModel.GetListForWeek(week);
+
+			// get the master picks
+			var masterPicks = ForUserFromPicks(allPicks, new UserListViewModel { Id = Pick.MASTER_PICKS_USER_ID }, schedules);
+
+			var listAllPicks = new List<AllPicksViewModel>();
+			// first element in list is master picks
+			listAllPicks.Add(masterPicks);
+
+			// get all users
+			var users = UserListViewModel.GetList();
+			// add all non-guest users
+			foreach (var user in users.Where(u => u.Role != "Guest").OrderBy(u => u.FirstName + " " + u.LastName))
+			{
+				listAllPicks.Add(ForUserFromPicks(allPicks, user, schedules));
+			}
+
+			return listAllPicks;
+		}
+
+		private static AllPicksViewModel ForUserFromPicks(List<PickViewModel> picks, UserListViewModel user, List<ScheduleViewModel> schedules)
+		{
+			var model = new AllPicksViewModel
+			{
+				User = user
+			};
+
+			// add all schedules with null pick
+			foreach (var schedule in schedules.OrderBy(s => s.Date).ThenBy(s => s.Id))
+			{
+				model.PickedTeams.Add(schedule.Id, null);
+			}
+
+			if (picks != null)
+			{
+				// only add the teams for locked games
+				foreach (var pick in picks.Where(p => p.User.Id == user.Id && !p.CanPick))
+				{
+					model.PickedTeams[pick.Schedule.Id] = pick.PickHomeTeam.GetValueOrDefault(false) ? pick.Schedule.HomeTeam : pick.Schedule.AwayTeam;
+				}
+			}
+
+			return model;
+		}
+
+  	}
 }

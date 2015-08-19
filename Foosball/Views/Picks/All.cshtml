@@ -1,0 +1,61 @@
+﻿@model List<Foosball.Models.AllPicksViewModel>
+
+<table id="picksTable" class="row-border compact stripe" cellspacing="0">
+	<thead>
+		<tr>
+			<th></th>
+			<th></th>
+			@for (int i = 0; i < Model[0].PickedTeams.Keys.Count; i++)
+			{
+				<th></th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var pick in Model.Where(m => m.User.Id != Foosball.Entities.Pick.MASTER_PICKS_USER_ID))
+		{
+			<tr>
+				<td>
+					@if (!string.IsNullOrEmpty(pick.User.ImageUrl))
+					{
+						<img src="@(pick.User.ImageUrl + (pick.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+					}
+				</td>
+				<td>
+					@(pick.User.FirstName + " " + pick.User.LastName)
+				</td>
+
+				@foreach (var team in pick.PickedTeams.Values)
+				{
+					<td>
+						@if (team != null)
+						{
+							<img src="@team.ImageUrl" alt="@team.Name" title="@team.Name" class="team-logo-small" />
+						}
+						else
+						{
+							// no pick
+							<span class="no-pick"></span>
+						}
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#picksTable').dataTable({
+			paging: false,
+			ordering: false,
+			sorting: false,
+			searching: false,
+			info: false,
+			order: []
+		});
+
+		// change the container to fluid
+		$('div.body-content').removeClass('container').addClass('container-fluid');
+	});
+</script>

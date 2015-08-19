@@ -9,6 +9,8 @@ namespace Foosball.Entities
 {
 	public class Pick
 	{
+		public const string MASTER_PICKS_USER_ID = "00000000-0000-0000-0000-000000000000";
+
 		public int Id { get; set; }
 
 		[Required]
