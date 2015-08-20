@@ -95,6 +95,13 @@ tr.group {
 tr.tie-breaker {
 	font-weight: bold;
 }
+tr.master-picks {
+	font-weight: bold;
+}
+tr.spacer-row {
+	height: 6px;
+	background-color: #666 !important;
+}
 
 #rules ol li {
 	margin-bottom: 10px;

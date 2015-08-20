@@ -37,7 +37,7 @@
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
 					@if (User.IsInRole("User") || User.IsAdmin())
 					{
-						<li>@Html.ActionLink("Picks", "Index", "Picks", new { area = "" }, null)</li>
+						<li>@Html.ActionLink("My Picks", "Index", "Picks", new { area = "" }, null)</li>
 						<li>@Html.ActionLink("All Picks", "All", "Picks", new { area = "" }, null)</li>
 					}
 					@if (User.IsAdmin())

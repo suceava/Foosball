@@ -1,17 +1,65 @@
 ﻿@model List<Foosball.Models.AllPicksViewModel>
 
-<table id="picksTable" class="row-border compact stripe" cellspacing="0">
+<div class="container">
+	<nav class="picks-nav">
+		<ul class="pagination">
+			@for (int i = 1; i <= ViewBag.CurrentWeek; i++)
+			{
+				<li class="@(i == ViewBag.Week ? "active" : "")"><a href="@Url.Action("All", new { week = i })">@i</a></li>
+			}
+		</ul>
+	</nav>
+</div>
+
+@{ 
+	var masterPicks = Model[0];
+	var tableWidth = 64 + 160 + masterPicks.PickedTeams.Count * 64 + 32;
+}
+
+@if(ViewBag.NoGamesLocked)
+{
+	<h4 class="column-center">No games have been locked for this week</h4>
+}
+
+<table id="picksTable" class="row-border compact stripe" cellspacing="0" width="@(tableWidth)px">
 	<thead>
 		<tr>
 			<th></th>
 			<th></th>
-			@for (int i = 0; i < Model[0].PickedTeams.Keys.Count; i++)
+			@for (int i = 0; i < masterPicks.PickedTeams.Keys.Count; i++)
 			{
 				<th></th>
 			}
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
+		<tr class="master-picks">
+			<td></td>
+			<td>RESULTS</td>
+			@foreach (var team in masterPicks.PickedTeams.Values)
+			{
+				<td>
+					@if (team != null)
+					{
+						<img src="@team.ImageUrl" alt="@team.Name" title="@team.Name" class="team-logo-small" />
+					}
+					else
+					{
+						// no pick
+						<span class="no-pick"></span>
+					}
+				</td>
+			}
+			<td>@(masterPicks.CombinedScore.HasValue ? masterPicks.CombinedScore.Value.ToString() : "")</td>
+		</tr>
+		<tr class="spacer-row">
+			@for(var i=0; i< masterPicks.PickedTeams.Count + 3; i++)
+			{
+				<td></td>
+			}
+		</tr>
+
 		@foreach (var pick in Model.Where(m => m.User.Id != Foosball.Entities.Pick.MASTER_PICKS_USER_ID))
 		{
 			<tr>
@@ -39,6 +87,7 @@
 						}
 					</td>
 				}
+				<td>@(pick.CombinedScore.HasValue ? pick.CombinedScore.Value.ToString() : "")</td>
 			</tr>
 		}
 	</tbody>
@@ -52,7 +101,22 @@
 			sorting: false,
 			searching: false,
 			info: false,
-			order: []
+			order: [],
+			columnDefs: [
+				{ // user image
+					targets: 0,
+					width: '1px'
+				},
+				{ // user name
+					targets: 1,
+					width: '100%'
+				},
+				{ // combined score
+					targets: @(masterPicks.PickedTeams.Count + 2),
+					width: '24px',
+					class: 'column-right'
+				}
+			]
 		});
 
 		// change the container to fluid

@@ -127,6 +127,7 @@ namespace Foosball.Models
 	{
 		public UserListViewModel User { get; set; }
 		public Dictionary<int, TeamViewModel> PickedTeams { get; }
+		public int? CombinedScore { get; set; }
 
 		public AllPicksViewModel()
 		{
@@ -178,6 +179,10 @@ namespace Foosball.Models
 				foreach (var pick in picks.Where(p => p.User.Id == user.Id && !p.CanPick))
 				{
 					model.PickedTeams[pick.Schedule.Id] = pick.PickHomeTeam.GetValueOrDefault(false) ? pick.Schedule.HomeTeam : pick.Schedule.AwayTeam;
+					if (pick.Schedule.RequireScore)
+					{
+						model.CombinedScore = pick.CombinedScore.GetValueOrDefault(0);
+					}
 				}
 			}
 

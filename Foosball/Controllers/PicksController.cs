@@ -150,8 +150,13 @@ namespace Foosball.Controllers
 			var currentWeek = SchedulesDb.GetCurrentWeek();
 			var picksWeek = week.GetValueOrDefault(currentWeek);
 
+			ViewBag.CurrentWeek = currentWeek;
+			ViewBag.Week = picksWeek;
 
-			return View(AllPicksViewModel.GetListForWeek(picksWeek));
+			var allPicks = AllPicksViewModel.GetListForWeek(picksWeek);
+			ViewBag.NoGamesLocked = allPicks[0].PickedTeams.All(kv => kv.Value == null);
+
+			return View(allPicks);
 		}
 	}
 }
