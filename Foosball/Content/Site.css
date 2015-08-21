@@ -65,8 +65,10 @@ table {
 }
 td.picked {
 	font-weight: bold;
-	color: #000;
-	background-color: #f6f6f6 !important;
+	color: #1f44e3;
+	background-color: #eee !important;
+	border-left: 1px solid #bbb;
+	border-right: 1px solid #bbb;
 }
 td.pickable {
 	cursor: pointer;
@@ -113,4 +115,7 @@ tr.spacer-row {
 }
 .picks-nav {
 	float: right;
+}
+.no-pick {
+	
 }
