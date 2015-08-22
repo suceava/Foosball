@@ -13,6 +13,7 @@ namespace Foosball.Controllers
 		{
 			ViewBag.Winnings = CurrentUser != null ? CurrentUser.Winnings : 0;
 			ViewBag.FullName = CurrentUser.FirstName + " " + CurrentUser.LastName;
+			ViewBag.ImageUrl = CurrentUser.ImageUrl;
 
 			return View();
 		}

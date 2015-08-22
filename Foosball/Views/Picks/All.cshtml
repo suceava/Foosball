@@ -26,6 +26,7 @@
 		<tr>
 			<th></th>
 			<th></th>
+			<th></th>
 			@for (int i = 0; i < masterPicks.PickedTeams.Keys.Count; i++)
 			{
 				<th></th>
@@ -35,6 +36,7 @@
 	</thead>
 	<tbody>
 		<tr class="master-picks">
+			<td></td>
 			<td></td>
 			<td>RESULTS</td>
 			@foreach (var team in masterPicks.PickedTeams.Values)
@@ -47,14 +49,14 @@
 					else
 					{
 						// no pick
-						<span class="no-pick"></span>
+						<div class="no-pick"></div>
 					}
 				</td>
 			}
 			<td>@(masterPicks.CombinedScore.HasValue ? masterPicks.CombinedScore.Value.ToString() : "")</td>
 		</tr>
 		<tr class="spacer-row">
-			@for(var i=0; i< masterPicks.PickedTeams.Count + 3; i++)
+			@for(var i=0; i< masterPicks.PickedTeams.Count + 4; i++)
 			{
 				<td></td>
 			}
@@ -63,6 +65,7 @@
 		@foreach (var pick in Model.Where(m => m.User.Id != Foosball.Entities.Pick.MASTER_PICKS_USER_ID))
 		{
 			<tr>
+				<td>@pick.CorrectPicks</td>
 				<td>
 					@if (!string.IsNullOrEmpty(pick.User.ImageUrl))
 					{
@@ -83,7 +86,7 @@
 						else
 						{
 							// no pick
-							<span class="no-pick"></span>
+							<div class="no-pick"></div>
 						}
 					</td>
 				}
@@ -103,16 +106,20 @@
 			info: false,
 			order: [],
 			columnDefs: [
-				{ // user image
+				{ // points
 					targets: 0,
+					width: '50px'
+				},
+				{ // user image
+					targets: 1,
 					width: '1px'
 				},
 				{ // user name
-					targets: 1,
+					targets: 2,
 					width: '100%'
 				},
 				{ // combined score
-					targets: @(masterPicks.PickedTeams.Count + 2),
+					targets: @(masterPicks.PickedTeams.Count + 3),
 					width: '24px',
 					class: 'column-right'
 				}

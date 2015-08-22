@@ -275,6 +275,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\DataTables\css\dataTables.responsive.scss" />
     <Content Include="Content\DataTables\css\dataTables.jqueryui.scss" />
+    <None Include="Properties\PublishProfiles\football.arashamini.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DataTables\dataTables.autoFill.js" />
@@ -354,6 +355,9 @@
     <Content Include="Views\Picks\Index.cshtml" />
     <Content Include="Views\Account\SetPassword.cshtml" />
     <Content Include="Views\Picks\All.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Picks\Standings.cshtml" />
+    <Content Include="Views\Picks\Top20.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\" />

@@ -128,6 +128,7 @@ namespace Foosball.Models
 		public UserListViewModel User { get; set; }
 		public Dictionary<int, TeamViewModel> PickedTeams { get; }
 		public int? CombinedScore { get; set; }
+		public int CorrectPicks { get; set; }
 
 		public AllPicksViewModel()
 		{
@@ -143,28 +144,32 @@ namespace Foosball.Models
 			var allPicks = PickViewModel.GetListForWeek(week);
 
 			// get the master picks
-			var masterPicks = ForUserFromPicks(allPicks, new UserListViewModel { Id = Pick.MASTER_PICKS_USER_ID }, schedules);
+			var masterPicks = ForUserFromPicks(allPicks, new UserListViewModel { Id = Pick.MASTER_PICKS_USER_ID }, schedules, null);
 
 			var listAllPicks = new List<AllPicksViewModel>();
-			// first element in list is master picks
-			listAllPicks.Add(masterPicks);
 
 			// get all users
 			var users = UserListViewModel.GetList();
 			// add all non-guest users
-			foreach (var user in users.Where(u => u.Role != "Guest").OrderBy(u => u.FirstName + " " + u.LastName))
+			foreach (var user in users.Where(u => u.Role != "Guest"))
 			{
-				listAllPicks.Add(ForUserFromPicks(allPicks, user, schedules));
+				listAllPicks.Add(ForUserFromPicks(allPicks, user, schedules, masterPicks));
 			}
+
+			listAllPicks = listAllPicks.OrderByDescending(p => p.CorrectPicks).ThenBy(p => p.User.FirstName + " " + p.User.LastName).ToList();
+
+			// first element in list is master picks
+			listAllPicks.Insert(0, masterPicks);
 
 			return listAllPicks;
 		}
 
-		private static AllPicksViewModel ForUserFromPicks(List<PickViewModel> picks, UserListViewModel user, List<ScheduleViewModel> schedules)
+		private static AllPicksViewModel ForUserFromPicks(List<PickViewModel> picks, UserListViewModel user, List<ScheduleViewModel> schedules, AllPicksViewModel masterPicks)
 		{
 			var model = new AllPicksViewModel
 			{
-				User = user
+				User = user,
+				CorrectPicks = 0
 			};
 
 			// add all schedules with null pick
@@ -178,16 +183,65 @@ namespace Foosball.Models
 				// only add the teams for locked games
 				foreach (var pick in picks.Where(p => p.User.Id == user.Id && !p.CanPick))
 				{
-					model.PickedTeams[pick.Schedule.Id] = pick.PickHomeTeam.GetValueOrDefault(false) ? pick.Schedule.HomeTeam : pick.Schedule.AwayTeam;
+					var userPick = pick.PickHomeTeam.GetValueOrDefault(false) ? pick.Schedule.HomeTeam : pick.Schedule.AwayTeam;
+                    model.PickedTeams[pick.Schedule.Id] = userPick;
 					if (pick.Schedule.RequireScore)
 					{
 						model.CombinedScore = pick.CombinedScore.GetValueOrDefault(0);
+					}
+
+					if (masterPicks != null)
+					{
+						// find the master pick for this schedule
+						var masterPick = masterPicks.PickedTeams.ContainsKey(pick.Schedule.Id) ? masterPicks.PickedTeams[pick.Schedule.Id] : null;
+						if (masterPick != null && masterPick.Id == userPick.Id)
+						{
+							// match
+							model.CorrectPicks++;
+						}
 					}
 				}
 			}
 
 			return model;
 		}
-
   	}
+
+	public class StandingsViewModel
+	{
+		public UserListViewModel User { get; set; }
+		public List<int> WeeklyPoints { get; }
+
+		public StandingsViewModel()
+		{
+			WeeklyPoints = new List<int>();
+		}
+
+		public static List<StandingsViewModel> GetList()
+		{
+			var maxWeek = SchedulesDb.GetWeekCount();
+			var listStandings = new List<StandingsViewModel>();
+
+			for (var week = 1; week <= maxWeek; week++)
+			{
+				// get all picks for each week
+				var allPicks = AllPicksViewModel.GetListForWeek(week);
+				foreach (var pick in allPicks.Where(p => p.User.Id != Pick.MASTER_PICKS_USER_ID))
+				{
+					var standing = listStandings.Find(s => s.User.Id == pick.User.Id);
+					if (standing == null)
+					{
+						standing = new StandingsViewModel
+						{
+							User = pick.User
+						};
+						listStandings.Add(standing);
+					}
+					standing.WeeklyPoints.Add(pick.CorrectPicks);
+				}
+			}
+
+			return listStandings;
+		}
+	}
 }

@@ -113,9 +113,23 @@ tr.spacer-row {
 	font-style: italic;
 	margin-top: 25px;
 }
+#pastWinners ul {
+	list-style: none;
+}
+
 .picks-nav {
 	float: right;
 }
 .no-pick {
-	
+	width: 40px;
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
+@media (max-width: 800px) {
+	/* hide user image */
+	img.user-list-image {
+		visibility: hidden;
+		display: none;
+	}
 }

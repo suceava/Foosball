@@ -1,0 +1,61 @@
+﻿@model List<Foosball.Models.StandingsViewModel> 
+
+<table id="standingsTable" class="row-border compact stripe" cellspacing="0">
+	<thead>
+		<tr>
+			<th></th>
+			<th></th>
+			@for (int i = 1; i <= Model[0].WeeklyPoints.Count; i++)
+			{
+				<th>Week @i</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var s in Model)
+		{
+			<tr>
+				<td>
+					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
+					{
+						<img src="@(s.User.ImageUrl + (s.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+					}
+				</td>
+				<td>
+					@(s.User.FirstName + " " + s.User.LastName)
+				</td>
+
+				@for (var i = 0; i < s.WeeklyPoints.Count; i++)
+				{
+					<td>@s.WeeklyPoints[i]</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#standingsTable').dataTable({
+			paging: false,
+			ordering: false,
+			sorting: false,
+			searching: false,
+			info: false,
+			order: [],
+			columnDefs: [
+				{ // user image
+					targets: 0,
+					width: '1px'
+				},
+				{ // user name
+					targets: 1,
+					width: '100%'
+				}
+			]
+		});
+
+		// change the container to fluid
+		$('div.body-content').removeClass('container').addClass('container-fluid');
+	});
+</script>

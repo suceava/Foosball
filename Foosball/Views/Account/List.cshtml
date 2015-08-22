@@ -43,7 +43,7 @@
 					render: function (data, type, row) {
 						if (!data)
 							return '';
-						return '<img src="' + data + '"/>';
+						return '<img src="' + data + '?s=40" class="user-list-image" />';
 					}
 				},
 				{
@@ -67,7 +67,7 @@
 							spacer = '<span class="glyphicon glyphicon-spacer"></span> '
 							dom = '';
 
-						dom += pwd;
+						dom += edit + pwd;
 						dom += (row.Role == 'Guest') ? secUp : (row.Role == 'User') ? secDown : spacer;
 						dom += del;
 

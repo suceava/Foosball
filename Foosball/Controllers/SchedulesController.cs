@@ -17,6 +17,8 @@ namespace Foosball.Controllers
 		public ActionResult Index(int? week)
 		{
 			ViewBag.MaxWeek = SchedulesDb.GetWeekCount();
+			// force week to current week
+			week = week.GetValueOrDefault(ViewBag.MaxWeek);
 			ViewBag.Week = week;
 
 			return View();
@@ -25,6 +27,9 @@ namespace Foosball.Controllers
 		[HttpGet]
 		public ActionResult ListData(int? week)
 		{
+			// force week to current week
+			week = week.GetValueOrDefault(SchedulesDb.GetWeekCount());
+
 			return Json(new { data = ScheduleViewModel.GetList(week) }, JsonRequestBehavior.AllowGet);
 		}
 

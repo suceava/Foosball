@@ -94,6 +94,24 @@ namespace Foosball.Models
 		public bool RememberMe { get; set; }
 	}
 
+	public class UserEditViewModel
+	{
+		public string Id { get; set; }
+
+		[Required]
+		[EmailAddress]
+		[Display(Name = "Email")]
+		public string Email { get; set; }
+
+		[Display(Name = "First")]
+		[StringLength(100)]
+		public string FirstName { get; set; }
+
+		[Display(Name = "Last")]
+		[StringLength(100)]
+		public string LastName { get; set; }
+	}
+
 	public class RegisterViewModel
 	{
 		[Required]

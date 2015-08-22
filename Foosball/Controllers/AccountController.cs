@@ -298,6 +298,70 @@ namespace Foosball.Controllers
 
 		#region user list actions
 
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public ActionResult Edit(string id)
+		{
+			#region validation
+
+			if (string.IsNullOrEmpty(id))
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid user ID");
+			}
+			var user = UserManager.FindById(id);
+			if (user == null)
+			{
+				return new HttpStatusCodeResult(HttpStatusCode.NotFound, "User not found");
+			}
+
+			#endregion
+
+			var model = new UserEditViewModel
+			{
+				Email = user.Email,
+				FirstName = user.FirstName,
+				LastName = user.LastName
+			};
+			return View(model);
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Admin")]
+		public async Task<ActionResult> Edit(UserEditViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+			var user = await UserManager.FindByIdAsync(model.Id);
+			if (user == null)
+			{
+				// Don't reveal that the user does not exist
+				AddErrors(new IdentityResult("User not found"));
+				return View(model);
+			}
+			// make sure email is not taken
+			var otherUser = await UserManager.FindByEmailAsync(model.Email);
+			if (otherUser != null && otherUser.Id != model.Id)
+			{
+				AddErrors(new IdentityResult("Email is already taken"));
+				return View(model);
+			}
+
+			user.Email = model.Email;
+			user.UserName = model.Email;
+			user.FirstName = model.FirstName;
+			user.LastName = model.LastName;
+
+			var result = await UserManager.UpdateAsync(user);
+			if (result.Succeeded)
+			{
+				return RedirectToAction("List");
+			}
+			AddErrors(result);
+			return View(model);
+		}
+
 		[HttpPost]
 		[Authorize(Roles = "Admin")]
 		public ActionResult SecurityUp(string id)

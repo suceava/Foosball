@@ -158,5 +158,19 @@ namespace Foosball.Controllers
 
 			return View(allPicks);
 		}
+
+		[HttpGet]
+		public ActionResult Standings()
+		{
+			var standings = StandingsViewModel.GetList();
+
+			return View(standings);
+		}
+
+		[HttpGet]
+		public ActionResult Top20()
+		{
+			return View();
+		}
 	}
 }

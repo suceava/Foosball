@@ -122,11 +122,15 @@
 					targets: 6,
 					width: '75px',
 					class: 'total-points',
+					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+						var td = $(cell);
+						td.data('scheduleId', rowData.Schedule.Id);
+					},
 					render: function (data, type, row) {
 						if (!row.Schedule.RequireScore) {
 							return '';
 						}
-						return '<input placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' />';
+						return '<div><input placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
 					}
 				},
 				{
