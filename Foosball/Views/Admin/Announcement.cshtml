@@ -1,0 +1,36 @@
+﻿@model Foosball.Models.AnnouncementViewModel
+
+@Scripts.Render("~/scripts/tinymce/tinymce.min.js")
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4>Announcement</h4>
+		<hr />
+
+		<div class="form-group">
+			<textarea name="announcement" style="width:100%">@Model.Announcement</textarea>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
+}
+
+<script type="text/javascript">
+tinymce.init({
+	selector: "textarea",
+	height: 400,
+    plugins: [
+        "advlist autolink lists link image charmap preview anchor",
+        "searchreplace visualblocks code fullscreen",
+        "insertdatetime media table contextmenu paste"
+    ],
+    toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+});
+</script>

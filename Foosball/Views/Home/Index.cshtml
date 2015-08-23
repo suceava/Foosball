@@ -18,6 +18,18 @@
 	</div>
 </div>
 
+@if (!string.IsNullOrEmpty(ViewBag.Announcement))
+{
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Announcement</h3>
+		</div>
+		<div class="panel-body">
+			@Html.Raw(ViewBag.Announcement)
+		</div>
+	</div>
+}
+
 <div class="row">
 	<div class="col-md-8">
 		<div id="rules" class="panel panel-default">
