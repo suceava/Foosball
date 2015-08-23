@@ -156,3 +156,11 @@ tr.spacer-row {
 	margin-right: 8px;
 	font-weight: bold;
 }
+
+td.rank-1 {
+	font-weight: bold;
+	background-color: gold;
+}
+td.rank-2 {
+	background-color: silver;
+}

@@ -12,8 +12,8 @@
 		@foreach (var standing in Model)
 		{
 			<tr>
-				<td>@standing.Place</td>
-				<td>@standing.WeeklyPoints.Sum()</td>
+				<td>@standing.Rank</td>
+				<td>@standing.WeeklyPoints.Sum(w => w.Points)</td>
 				<td>@(standing.User.FirstName + " " + standing.User.LastName)</td>
 			</tr>
 		}

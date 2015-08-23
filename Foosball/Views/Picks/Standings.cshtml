@@ -17,8 +17,8 @@
 		@foreach (var s in Model)
 		{
 			<tr>
-				<td>@s.Place</td>
-				<td>@s.WeeklyPoints.Sum()</td>
+				<td>@s.Rank</td>
+				<td>@s.WeeklyPoints.Sum(w => w.Points)</td>
 				<td>
 					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
 					{
@@ -31,7 +31,7 @@
 
 				@for (var i = 0; i < s.WeeklyPoints.Count; i++)
 				{
-					<td>@s.WeeklyPoints[i]</td>
+					<td class="column-right rank-@s.WeeklyPoints[i].Rank">@s.WeeklyPoints[i].Points</td>
 				}
 			</tr>
 		}

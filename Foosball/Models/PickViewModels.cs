@@ -144,6 +144,7 @@ namespace Foosball.Models
 		public Dictionary<int, TeamViewModel> PickedTeams { get; }
 		public int? CombinedScore { get; set; }
 		public int CorrectPicks { get; set; }
+		public int Rank { get; set; }
 
 		public AllPicksViewModel()
 		{
@@ -173,6 +174,44 @@ namespace Foosball.Models
 			}
 
 			listAllPicks = listAllPicks.OrderByDescending(p => p.CorrectPicks).ThenBy(p => p.User.FirstName + " " + p.User.LastName).ToList();
+
+			// set the rank
+			for (var i=0; i<listAllPicks.Count; i++)
+			{
+				listAllPicks[i].Rank = i + 1;
+			}
+
+			#region handle tied points for 1st place
+
+			// we're only going to do this if the Monday night game as been locked since we need the combined score
+			if (schedules.Find(s => s.RequireScore && !s.IsPickable) != null)
+			{
+				// get the master pick for that game
+				if (listAllPicks.Count > 0)
+				{
+					// get all picks with same top points
+					var tiedPicks = listAllPicks.Where(p => p.CorrectPicks == listAllPicks[0].CorrectPicks).ToList();
+					if (tiedPicks.Count > 1)
+					{
+						// we have some tied picks
+						// RULE: The person closest to the Monday Night score will be the winner. If there is still a tie then under beats over
+						tiedPicks = tiedPicks.OrderBy(p => Math.Abs(p.CombinedScore.GetValueOrDefault(0) - masterPicks.CombinedScore.GetValueOrDefault(0)) 
+													+ (p.CombinedScore.GetValueOrDefault(0) < masterPicks.CombinedScore.GetValueOrDefault(0) ? 0.0 : 0.5)).ToList();
+
+						// reset the rank and re-position them in main list
+						for (var i=0; i< tiedPicks.Count; i++)
+						{
+							var tiedPick = tiedPicks[i];
+							tiedPick.Rank = i + 1;
+
+							listAllPicks.Remove(tiedPick);
+							listAllPicks.Insert(i, tiedPick);
+						}
+					}
+				}
+			}
+
+			#endregion
 
 			// first element in list is master picks
 			listAllPicks.Insert(0, masterPicks);
@@ -223,15 +262,21 @@ namespace Foosball.Models
 		}
   	}
 
+	public class WeeklyStanding
+	{
+		public int Rank { get; set; }
+		public int Points { get; set; }
+	}
+
 	public class StandingsViewModel
 	{
 		public UserListViewModel User { get; set; }
-		public List<int> WeeklyPoints { get; }
-		public int Place { get; set; }
+		public List<WeeklyStanding> WeeklyPoints { get; }
+		public int Rank { get; set; }
 
 		public StandingsViewModel()
 		{
-			WeeklyPoints = new List<int>();
+			WeeklyPoints = new List<WeeklyStanding>();
 		}
 
 		public static List<StandingsViewModel> GetList()
@@ -255,18 +300,22 @@ namespace Foosball.Models
 						};
 						listStandings.Add(standing);
 					}
-					standing.WeeklyPoints.Add(pick.CorrectPicks);
+					standing.WeeklyPoints.Add(new WeeklyStanding
+					{
+						Rank = pick.Rank,
+						Points = pick.CorrectPicks
+					});
 				}
 			}
 
 			// sort by total points
-			listStandings = listStandings.OrderByDescending(s => s.WeeklyPoints.Sum()).ToList();
+			listStandings = listStandings.OrderByDescending(s => s.WeeklyPoints.Sum(w => w.Points)).ToList();
 
 			// set the Place
 			for (var i=0; i<listStandings.Count; i++)
 			{
 				var standing = listStandings[i];
-				standing.Place = i + 1;
+				standing.Rank = i + 1;
 			}
 
 			return listStandings;
