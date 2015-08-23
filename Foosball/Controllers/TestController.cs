@@ -44,7 +44,7 @@ namespace Foosball.Controllers
 				}
 			}
 
-			for (var week = 1; week <= 1; week++)
+			for (var week = 1; week <= 3; week++)
 			{
 				// get week  schedules
 				var schedules = ScheduleViewModel.GetList(week);

@@ -227,6 +227,7 @@ namespace Foosball.Models
 	{
 		public UserListViewModel User { get; set; }
 		public List<int> WeeklyPoints { get; }
+		public int Place { get; set; }
 
 		public StandingsViewModel()
 		{
@@ -256,6 +257,16 @@ namespace Foosball.Models
 					}
 					standing.WeeklyPoints.Add(pick.CorrectPicks);
 				}
+			}
+
+			// sort by total points
+			listStandings = listStandings.OrderByDescending(s => s.WeeklyPoints.Sum()).ToList();
+
+			// set the Place
+			for (var i=0; i<listStandings.Count; i++)
+			{
+				var standing = listStandings[i];
+				standing.Place = i + 1;
 			}
 
 			return listStandings;

@@ -3,9 +3,10 @@
 <table id="standingsTable" class="row-border compact stripe" cellspacing="0">
 	<thead>
 		<tr>
+			<th>Pl.</th>
+			<th>Wins</th>
 			<th></th>
-			<th></th>
-			<th></th>
+			<th>Name</th>
 			@for (int i = 1; i <= Model[0].WeeklyPoints.Count; i++)
 			{
 				<th>Week @i</th>
@@ -16,6 +17,7 @@
 		@foreach (var s in Model)
 		{
 			<tr>
+				<td>@s.Place</td>
 				<td>@s.WeeklyPoints.Sum()</td>
 				<td>
 					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
@@ -46,17 +48,22 @@
 			info: false,
 			order: [],
 			columnDefs: [
-				{ // points
+				{ // place
 					targets: 0,
-					width: '50px',
+					width: '1px',
+					class: 'column-right'
+				},
+				{ // points
+					targets: 1,
+					width: '1px',
 					class: 'column-right standing-points'
 				},
 				{ // user image
-					targets: 1,
+					targets: 2,
 					width: '1px'
 				},
 				{ // user name
-					targets: 2,
+					targets: 3,
 					width: '100%'
 				}
 			]

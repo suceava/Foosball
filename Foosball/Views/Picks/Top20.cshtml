@@ -1,14 +1,52 @@
 ﻿@model List<Foosball.Models.StandingsViewModel>
 
-<div>
-	<ul>
+<table id="top20Table" class="row-border compact stripe" cellspacing="0">
+	<thead>
+		<tr>
+			<th>Pl.</th>
+			<th>Wins</th>
+			<th>Name</th>
+		</tr>
+	</thead>
+	<tbody>
 		@foreach (var standing in Model)
 		{
-			<li>
-				<div class="standing-points">@standing.WeeklyPoints.Sum()</div>@(standing.User.FirstName + " " + standing.User.LastName)
-			</li>
+			<tr>
+				<td>@standing.Place</td>
+				<td>@standing.WeeklyPoints.Sum()</td>
+				<td>@(standing.User.FirstName + " " + standing.User.LastName)</td>
+			</tr>
 		}
-	</ul>
-</div>
+	</tbody>
+</table>
 
 @Html.ActionLink("See all standings", "../Picks/Standings")
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#top20Table').dataTable({
+			paging: false,
+			ordering: false,
+			sorting: false,
+			searching: false,
+			info: false,
+			order: [],
+			columnDefs: [
+				{ // place
+					targets: 0,
+					width: '1px',
+					class: 'column-right'
+				},
+				{ // points
+					targets: 1,
+					width: '2px',
+					class: 'column-right'
+				},
+				{ // user name
+					targets: 2,
+					width: '100%'
+				}
+			]
+		});
+	});
+</script>

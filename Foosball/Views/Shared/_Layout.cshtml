@@ -43,12 +43,11 @@
 					}
 					@if (User.IsAdmin())
 					{
-						<li>@Html.ActionLink("Master Picks", "Index", "Picks", new { area = "", isMaster = true }, null)</li>
-
 						<li role="presentation" class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Admin <span class="caret"></span></a>
 
 							<ul class="dropdown-menu">
+								<li>@Html.ActionLink("Master Picks", "Index", "Picks", new { area = "", isMaster = true }, null)</li>
 								<li>@Html.ActionLink("Schedules", "Index", "Schedules", new { area = "" }, null)</li>
 								<li>@Html.ActionLink("Teams", "Index", "Teams", new { area = "" }, null)</li>
 								<li>@Html.ActionLink("Accounts", "List", "Account", new { area = "" }, null)</li>
