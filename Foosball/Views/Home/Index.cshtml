@@ -1,8 +1,5 @@
 ﻿@using Foosball.Extensions;
 
-@section SPAViews {
-	@Html.Partial("_Home")
-}
 @section Scripts{
 	@*@Scripts.Render("~/bundles/knockout")
 		@Scripts.Render("~/bundles/app")*@
@@ -85,7 +82,10 @@
 			</div>
 
 			<div class="panel-body">
-				@{ Html.RenderAction("Top20", "Picks"); }
+				@if (!User.IsInRole("Guest"))
+				{
+					Html.RenderAction("Top20", "Picks");
+				}
 			</div>
 		</div>
 	</div>
