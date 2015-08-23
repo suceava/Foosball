@@ -449,6 +449,9 @@ namespace Foosball.Controllers
 
 			#endregion
 
+			// delete the user's picks
+			PickViewModel.DeleteForUser(id);
+
 			UserManager.Delete(user);
 
 			return Json(null);

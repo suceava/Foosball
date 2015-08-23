@@ -153,8 +153,9 @@ namespace Foosball.Controllers
 			ViewBag.CurrentWeek = currentWeek;
 			ViewBag.Week = picksWeek;
 
-			var allPicks = AllPicksViewModel.GetListForWeek(picksWeek);
-			ViewBag.NoGamesLocked = allPicks[0].PickedTeams.All(kv => kv.Value == null);
+			bool hasLockedSchedule;
+			var allPicks = AllPicksViewModel.GetListForWeek(picksWeek, out hasLockedSchedule);
+			ViewBag.NoGamesLocked = !hasLockedSchedule;
 
 			return View(allPicks);
 		}
@@ -170,7 +171,9 @@ namespace Foosball.Controllers
 		[HttpGet]
 		public ActionResult Top20()
 		{
-			return View();
+			var standings = StandingsViewModel.GetList();
+
+			return PartialView(standings.Take(20).ToList());
 		}
 	}
 }

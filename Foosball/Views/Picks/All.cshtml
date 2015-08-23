@@ -76,9 +76,10 @@
 					@(pick.User.FirstName + " " + pick.User.LastName)
 				</td>
 
-				@foreach (var team in pick.PickedTeams.Values)
+				@foreach (var scheduleId in pick.PickedTeams.Keys)
 				{
-					<td>
+					var team = pick.PickedTeams[scheduleId];
+					<td class="@(ViewBag.NoGamesLocked || masterPicks.PickedTeams[scheduleId] == null ? "" : (team != null && masterPicks.PickedTeams[scheduleId].Id == team.Id ? "correct-pick" : "incorrect-pick"))">
 						@if (team != null)
 						{
 							<img src="@team.ImageUrl" alt="@team.Name" title="@team.Name" class="team-logo-small" />
@@ -108,7 +109,8 @@
 			columnDefs: [
 				{ // points
 					targets: 0,
-					width: '50px'
+					width: '50px',
+					class: 'column-right standing-points'
 				},
 				{ // user image
 					targets: 1,

@@ -1,2 +1,14 @@
-﻿
-@Html.ActionLink("Standings", "../Picks/Standings")
+﻿@model List<Foosball.Models.StandingsViewModel>
+
+<div>
+	<ul>
+		@foreach (var standing in Model)
+		{
+			<li>
+				<div class="standing-points">@standing.WeeklyPoints.Sum()</div>@(standing.User.FirstName + " " + standing.User.LastName)
+			</li>
+		}
+	</ul>
+</div>
+
+@Html.ActionLink("See all standings", "../Picks/Standings")

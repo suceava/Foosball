@@ -188,6 +188,7 @@
     <Compile Include="Controllers\PicksController.cs" />
     <Compile Include="Controllers\SchedulesController.cs" />
     <Compile Include="Controllers\TeamsController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="DataContexts\IdentityDb.cs" />
     <Compile Include="DataContexts\PicksDb.cs" />
     <Compile Include="DataContexts\SchedulesDb.cs" />

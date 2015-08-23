@@ -5,6 +5,7 @@
 		<tr>
 			<th></th>
 			<th></th>
+			<th></th>
 			@for (int i = 1; i <= Model[0].WeeklyPoints.Count; i++)
 			{
 				<th>Week @i</th>
@@ -15,6 +16,7 @@
 		@foreach (var s in Model)
 		{
 			<tr>
+				<td>@s.WeeklyPoints.Sum()</td>
 				<td>
 					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
 					{
@@ -44,12 +46,17 @@
 			info: false,
 			order: [],
 			columnDefs: [
-				{ // user image
+				{ // points
 					targets: 0,
+					width: '50px',
+					class: 'column-right standing-points'
+				},
+				{ // user image
+					targets: 1,
 					width: '1px'
 				},
 				{ // user name
-					targets: 1,
+					targets: 2,
 					width: '100%'
 				}
 			]

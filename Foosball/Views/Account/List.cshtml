@@ -107,7 +107,7 @@
 			var id = $(this).attr('data-id');
 			if (confirm('Are you sure you want to delete the user?')) {
 				$.ajax({
-						url: _rootDir + '/account/delete/' + id,
+						url: _rootDir + 'account/delete/' + id,
 						method: 'POST'
 					})
 					.always(function () {

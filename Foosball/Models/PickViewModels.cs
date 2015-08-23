@@ -121,6 +121,21 @@ namespace Foosball.Models
 				db.SaveChanges();
 			}
 		}
+
+		public static void DeleteForUser(string userId)
+		{
+			var picks = PickViewModel.GetListForUser(userId, null);
+			using (var db = new PicksDb())
+			{
+				foreach (var pick in picks)
+				{
+					var p = pick.ToPick();
+
+					db.Entry(p).State = EntityState.Deleted;
+				}
+				db.SaveChanges();
+			}
+		}
 	}
 
 	public class AllPicksViewModel
@@ -135,10 +150,11 @@ namespace Foosball.Models
 			PickedTeams = new Dictionary<int, TeamViewModel>();
 		}
 
-		public static List<AllPicksViewModel> GetListForWeek(int week)
+		public static List<AllPicksViewModel> GetListForWeek(int week, out bool hasLockedSchedule)
 		{
 			// get schedules for the week
 			var schedules = ScheduleViewModel.GetList(week);
+			hasLockedSchedule = schedules.Any(s => !s.IsPickable);
 
 			// get all the picks for the week
 			var allPicks = PickViewModel.GetListForWeek(week);
@@ -219,13 +235,14 @@ namespace Foosball.Models
 
 		public static List<StandingsViewModel> GetList()
 		{
-			var maxWeek = SchedulesDb.GetWeekCount();
+			var maxWeek = SchedulesDb.GetCurrentWeek();
 			var listStandings = new List<StandingsViewModel>();
+			bool hasLockedSchedule;
 
 			for (var week = 1; week <= maxWeek; week++)
 			{
 				// get all picks for each week
-				var allPicks = AllPicksViewModel.GetListForWeek(week);
+				var allPicks = AllPicksViewModel.GetListForWeek(week, out hasLockedSchedule);
 				foreach (var pick in allPicks.Where(p => p.User.Id != Pick.MASTER_PICKS_USER_ID))
 				{
 					var standing = listStandings.Find(s => s.User.Id == pick.User.Id);

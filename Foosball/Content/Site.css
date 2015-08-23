@@ -79,6 +79,9 @@ td.pickable:hover {
 td.total-points input {
 	border-color: blue;
 }
+td.standing-points {
+	font-weight: bold;
+}
 
 tr.user-role-guest {
 	background-color: #fee !important;
@@ -125,6 +128,13 @@ tr.spacer-row {
 	margin-left: 8px;
 	margin-right: 8px;
 }
+.correct-pick {
+	background-color: #e0ffe0;
+	border: 1px solid #d0ffdo;
+}
+.incorrect-pick {
+	background-color: #ffe0e0;
+}
 
 @media (max-width: 800px) {
 	/* hide user image */
@@ -132,4 +142,17 @@ tr.spacer-row {
 		visibility: hidden;
 		display: none;
 	}
+}
+
+#top20 ul {
+	list-style: none;
+	margin: 0 0 10 0;
+	padding: 0;
+}
+#top20 .standing-points {
+	display: inline-block;
+	width: 25px;
+	text-align: right;
+	margin-right: 8px;
+	font-weight: bold;
 }
