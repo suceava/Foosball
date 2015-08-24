@@ -1,16 +1,22 @@
 ﻿@model List<Foosball.Models.StandingsViewModel> 
 
-<table id="standingsTable" class="row-border compact stripe" cellspacing="0">
+@{
+	var standing = Model.Count > 0 ? Model[0] : null;
+	var tableWidth = 40 + 64 + 160 + (standing != null ? standing.WeeklyPoints.Count * 60 : 0) + 55;
+}
+
+
+<table id="standingsTable" class="row-border compact stripe" cellspacing="0" width="@(tableWidth)px">
 	<thead>
 		<tr>
 			<th>Pl.</th>
-			<th>Wins</th>
 			<th></th>
 			<th>Name</th>
 			@for (int i = 1; i <= Model[0].WeeklyPoints.Count; i++)
 			{
 				<th>Week @i</th>
 			}
+			<th class="column-right">Wins</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -18,7 +24,6 @@
 		{
 			<tr>
 				<td>@s.Rank</td>
-				<td>@s.WeeklyPoints.Sum(w => w.Points)</td>
 				<td>
 					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
 					{
@@ -33,6 +38,7 @@
 				{
 					<td class="column-right rank-@s.WeeklyPoints[i].Rank">@s.WeeklyPoints[i].Points</td>
 				}
+				<td>@s.WeeklyPoints.Sum(w => w.Points)</td>
 			</tr>
 		}
 	</tbody>
@@ -53,18 +59,18 @@
 					width: '1px',
 					class: 'column-right'
 				},
-				{ // points
-					targets: 1,
-					width: '1px',
-					class: 'column-right standing-points'
-				},
 				{ // user image
-					targets: 2,
+					targets: 1,
 					width: '1px'
 				},
 				{ // user name
-					targets: 3,
+					targets: 2,
 					width: '100%'
+				},
+				{ // points
+					targets: @((Model.Count > 0 ? Model[0].WeeklyPoints.Count : 0) + 3),
+					width: '1px',
+					class: 'column-right standing-points'
 				}
 			]
 		});

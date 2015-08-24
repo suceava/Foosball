@@ -4,8 +4,8 @@
 	<thead>
 		<tr>
 			<th>Pl.</th>
-			<th>Wins</th>
 			<th>Name</th>
+			<th>Wins</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -13,8 +13,8 @@
 		{
 			<tr>
 				<td>@standing.Rank</td>
-				<td>@standing.WeeklyPoints.Sum(w => w.Points)</td>
 				<td>@(standing.User.FirstName + " " + standing.User.LastName)</td>
+				<td>@standing.WeeklyPoints.Sum(w => w.Points)</td>
 			</tr>
 		}
 	</tbody>
@@ -37,14 +37,14 @@
 					width: '1px',
 					class: 'column-right'
 				},
-				{ // points
-					targets: 1,
-					width: '2px',
-					class: 'column-right'
-				},
 				{ // user name
-					targets: 2,
+					targets: 1,
 					width: '100%'
+				},
+				{ // points
+					targets: 2,
+					width: '1px',
+					class: 'column-right'
 				}
 			]
 		});
