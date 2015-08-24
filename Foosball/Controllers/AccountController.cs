@@ -284,6 +284,13 @@ namespace Foosball.Controllers
 
 		#endregion
 
+		[AllowAnonymous]
+		[HttpGet]
+		public ActionResult KeepAlive()
+		{
+			return Json(null, JsonRequestBehavior.AllowGet);
+		}
+
 		[HttpGet]
 		public ActionResult List()
 		{

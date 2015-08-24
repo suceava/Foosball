@@ -21,6 +21,21 @@
 	@Scripts.Render("~/bundles/bootstrap")
 	@Scripts.Render("~/bundles/datatables")
 	@*@Scripts.Render("//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js")*@
+
+	<script type="text/javascript">
+		// keepalive ping
+		function keepalive() {
+			$.ajax({
+				url: _rootDir + 'account/keepalive',
+				method: 'GET',
+				complete: function (e) {
+					console.log('keep alive');
+					setTimeout(keepalive, 1000 * 60 * 4); // ping every 4 minutes
+				}
+			});
+		}
+		keepalive();
+	</script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
