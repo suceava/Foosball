@@ -53,6 +53,9 @@ table {
 .column-right {
 	text-align: right;
 }
+.column-right-spacer {
+	padding-right: 10px !important;
+}
 
 .team-logo-small {
 	width: 40px;
@@ -129,11 +132,10 @@ tr.spacer-row {
 	margin-right: 8px;
 }
 .correct-pick {
-	background-color: #e0ffe0;
-	border: 1px solid #d0ffdo;
+	background-color: #c0ffc0;
 }
 .incorrect-pick {
-	background-color: #ffe0e0;
+	background-color: #ffc0c0;
 }
 
 @media (max-width: 800px) {

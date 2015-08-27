@@ -1,5 +1,8 @@
 ﻿@model List<Foosball.Models.UserListViewModel>
 
+<h2>User Accounts</h2>
+<h5 id="userCounts"></h5>
+
 <table id="accountsTable" class="row-border" cellspacing="0">
 	<thead>
 		<tr>
@@ -17,7 +20,14 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#accountsTable').dataTable({
-			"ajax": _rootDir + 'account/listdata',
+			"ajax": {
+				url: _rootDir + 'account/listdata',
+				dataSrc: function(json) {
+					console.log(json);
+					$('#userCounts').text('There are ' + json.data.length + ' accounts');
+					return json.data;
+				}
+			},
 			paging: false,
 			searching: false,
 			info: false,

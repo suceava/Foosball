@@ -2,21 +2,21 @@
 
 @{
 	var standing = Model.Count > 0 ? Model[0] : null;
-	var tableWidth = 40 + 64 + 160 + (standing != null ? standing.WeeklyPoints.Count * 60 : 0) + 55;
+	var tableWidth = 40 + 64 + 160 + (standing != null ? standing.WeeklyPoints.Count * 80 : 0) + 55;
 }
 
 
 <table id="standingsTable" class="row-border compact stripe" cellspacing="0" width="@(tableWidth)px">
 	<thead>
 		<tr>
-			<th>Pl.</th>
+			<th>Rank</th>
 			<th></th>
 			<th>Name</th>
 			@for (int i = 1; i <= Model[0].WeeklyPoints.Count; i++)
 			{
-				<th>Week @i</th>
+				<th class="column-right">Week @i</th>
 			}
-			<th class="column-right">Wins</th>
+			<th class="column-right">Total</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -36,7 +36,13 @@
 
 				@for (var i = 0; i < s.WeeklyPoints.Count; i++)
 				{
-					<td class="column-right rank-@s.WeeklyPoints[i].Rank">@s.WeeklyPoints[i].Points</td>
+					<td class="column-right @(s.WeeklyPoints[i].WeekIsDone ? "rank-" + s.WeeklyPoints[i].Rank : "")" title="@(s.WeeklyPoints[i].AwardedMinPoints ? "No picks made, awarded minimum points minus one" : "")">
+						@if (s.WeeklyPoints[i].AwardedMinPoints)
+						{
+								<span>*</span>
+						}
+						@s.WeeklyPoints[i].Points
+					</td>
 				}
 				<td>@s.WeeklyPoints.Sum(w => w.Points)</td>
 			</tr>
@@ -57,7 +63,7 @@
 				{ // place
 					targets: 0,
 					width: '1px',
-					class: 'column-right'
+					class: 'column-right column-right-spacer'
 				},
 				{ // user image
 					targets: 1,
@@ -65,13 +71,17 @@
 				},
 				{ // user name
 					targets: 2,
-					width: '100%'
+					width: '160px'
 				},
+				@for (var i=0; i<(Model.Count > 0 ? Model[0].WeeklyPoints.Count : 0); i++)
+				{
+					@Html.Raw("{ targets: " + (i+3) + ", width: '60px', class: ' column-right-spacer' },")
+				}
 				{ // points
 					targets: @((Model.Count > 0 ? Model[0].WeeklyPoints.Count : 0) + 3),
 					width: '1px',
-					class: 'column-right standing-points'
-				}
+                    class: 'column-right column-right-spacer standing-points'
+                }
 			]
 		});
 

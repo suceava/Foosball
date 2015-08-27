@@ -145,6 +145,7 @@ namespace Foosball.Models
 		public int? CombinedScore { get; set; }
 		public int CorrectPicks { get; set; }
 		public int Rank { get; set; }
+		public bool AwardedMinPoints;
 
 		public AllPicksViewModel()
 		{
@@ -173,6 +174,16 @@ namespace Foosball.Models
 				listAllPicks.Add(ForUserFromPicks(allPicks, user, schedules, masterPicks));
 			}
 
+			// give users who made NO picks the minimum pick score minus one
+			// RULE: If you do not enter your picks for any week then you will get the lowest score minus one from participants for that particular week
+			var minPicks = listAllPicks.Where(p => p.PickedTeams.Values.Any(t => t != null)).Min(p => p.CorrectPicks);
+			foreach (var pick in listAllPicks.Where(p => p.PickedTeams.Values.All(t => t == null)))
+			{
+				pick.CorrectPicks = Math.Max(minPicks - 1, 0);
+				pick.AwardedMinPoints = true;
+			}
+
+			// do default sort by correct picks and name
 			listAllPicks = listAllPicks.OrderByDescending(p => p.CorrectPicks).ThenBy(p => p.User.FirstName + " " + p.User.LastName).ToList();
 
 			// set the rank
@@ -184,31 +195,14 @@ namespace Foosball.Models
 			#region handle tied points for 1st place
 
 			// we're only going to do this if the Monday night game as been locked since we need the combined score
-			if (schedules.Find(s => s.RequireScore && !s.IsPickable) != null)
+			if (schedules.Find(s => s.RequireScore && !s.IsPickable) != null && listAllPicks.Count > 0)
 			{
-				// get the master pick for that game
-				if (listAllPicks.Count > 0)
+				// check for tied picks for first place
+				if (!SortTiedPicks(listAllPicks, masterPicks, 0))
 				{
-					// get all picks with same top points
-					var tiedPicks = listAllPicks.Where(p => p.CorrectPicks == listAllPicks[0].CorrectPicks).ToList();
-					if (tiedPicks.Count > 1)
-					{
-						// we have some tied picks
-						// RULE: The person closest to the Monday Night score will be the winner. If there is still a tie then under beats over
-						tiedPicks = tiedPicks.OrderBy(p => Math.Abs(p.CombinedScore.GetValueOrDefault(0) - masterPicks.CombinedScore.GetValueOrDefault(0)) 
-													+ (p.CombinedScore.GetValueOrDefault(0) < masterPicks.CombinedScore.GetValueOrDefault(0) ? 0.0 : 0.5)).ToList();
-
-						// reset the rank and re-position them in main list
-						for (var i=0; i< tiedPicks.Count; i++)
-						{
-							var tiedPick = tiedPicks[i];
-							tiedPick.Rank = i + 1;
-
-							listAllPicks.Remove(tiedPick);
-							listAllPicks.Insert(i, tiedPick);
-						}
-					}
-				}
+					// if no tied picks for 1st place then check for tied picks for 2nd place
+					SortTiedPicks(listAllPicks, masterPicks, 1);
+                }
 			}
 
 			#endregion
@@ -217,6 +211,42 @@ namespace Foosball.Models
 			listAllPicks.Insert(0, masterPicks);
 
 			return listAllPicks;
+		}
+
+		private static bool SortTiedPicks(List<AllPicksViewModel> listAllPicks, AllPicksViewModel masterPicks, int indexToCheck)
+		{
+			// get all picks with same points as indexToCheck
+			var tiedPicks = listAllPicks.Where(p => p.CorrectPicks == listAllPicks[indexToCheck].CorrectPicks).ToList();
+			if (tiedPicks.Count == 1)
+			{
+				return false;
+			}
+
+			// we have some tied picks
+			// RULE: The person closest to the Monday Night score will be the winner. If there is still a tie then under beats over
+			tiedPicks = tiedPicks.OrderBy(p => Math.Abs(p.CombinedScore.GetValueOrDefault(0) - masterPicks.CombinedScore.GetValueOrDefault(0))
+										+ (p.CombinedScore.GetValueOrDefault(0) < masterPicks.CombinedScore.GetValueOrDefault(0) ? 0.0 : 0.5)).ToList();
+
+			// reset the rank and re-position them in main list
+			var newRank = indexToCheck + 1;
+			for (var i = 0; i < tiedPicks.Count; i++)
+			{
+				var tiedPick = tiedPicks[i];
+
+				// if combined score is the same, rank stays the same
+				if (i > 0 && tiedPick.CombinedScore != tiedPicks[i - 1].CombinedScore)
+				{
+					// otherwise reset to what it would have been (e.g. if we had two rank 1, then the third would be rank 3)
+					newRank = i + indexToCheck + 1;
+				}
+
+				tiedPick.Rank = newRank;
+
+				listAllPicks.Remove(tiedPick);
+				listAllPicks.Insert(i + indexToCheck, tiedPick);
+			}
+
+			return true;
 		}
 
 		private static AllPicksViewModel ForUserFromPicks(List<PickViewModel> picks, UserListViewModel user, List<ScheduleViewModel> schedules, AllPicksViewModel masterPicks)
@@ -266,6 +296,9 @@ namespace Foosball.Models
 	{
 		public int Rank { get; set; }
 		public int Points { get; set; }
+		public bool AwardedMinPoints { get; set; }
+
+		public bool WeekIsDone { get; set; }
 	}
 
 	public class StandingsViewModel
@@ -287,6 +320,9 @@ namespace Foosball.Models
 
 			for (var week = 1; week <= maxWeek; week++)
 			{
+				// see if all schedules for this week are locked
+				var weekIsDone = (week == maxWeek ? SchedulesDb.IsWeekLocked(week) : true);
+
 				// get all picks for each week
 				var allPicks = AllPicksViewModel.GetListForWeek(week, out hasLockedSchedule);
 				foreach (var pick in allPicks.Where(p => p.User.Id != Pick.MASTER_PICKS_USER_ID))
@@ -303,7 +339,9 @@ namespace Foosball.Models
 					standing.WeeklyPoints.Add(new WeeklyStanding
 					{
 						Rank = pick.Rank,
-						Points = pick.CorrectPicks
+						Points = pick.CorrectPicks,
+						AwardedMinPoints = pick.AwardedMinPoints,
+						WeekIsDone = weekIsDone
 					});
 				}
 			}

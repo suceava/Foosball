@@ -65,7 +65,13 @@
 		@foreach (var pick in Model.Where(m => m.User.Id != Foosball.Entities.Pick.MASTER_PICKS_USER_ID))
 		{
 			<tr>
-				<td>@pick.CorrectPicks</td>
+				<td title="@(pick.AwardedMinPoints ? "No picks made, awarded minimum points minus one" : "")">
+					@if (pick.AwardedMinPoints)
+					{
+						<span>*</span>
+					}
+					@pick.CorrectPicks
+				</td>
 				<td>
 					@if (!string.IsNullOrEmpty(pick.User.ImageUrl))
 					{
