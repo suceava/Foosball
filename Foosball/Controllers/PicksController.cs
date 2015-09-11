@@ -175,5 +175,21 @@ namespace Foosball.Controllers
 
 			return PartialView(standings.Take(15).ToList());
 		}
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public ActionResult NoPicks()
+		{
+			var currentWeek = SchedulesDb.GetCurrentWeek();
+			if (currentWeek == 0)
+			{
+				return null;
+			}
+			var users = UserListViewModel.GetListWithNoPicks(currentWeek);
+
+			ViewBag.CurrentWeek = currentWeek;
+
+            return View(users);
+		}
 	}
 }

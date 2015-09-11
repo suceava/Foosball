@@ -1,0 +1,54 @@
+﻿@model List<Foosball.Models.UserListViewModel>
+
+<div class="row">
+	<div class="col-md-5">
+		<h2>Users with no picks for week @ViewBag.CurrentWeek</h2>
+	</div>
+</div>
+
+<table id="noPicksTable" class="row-border compact stripe" cellspacing="0">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model)
+		{
+			<tr>
+				<td>
+					@if (!string.IsNullOrEmpty(user.ImageUrl))
+					{
+						<img src="@(user.ImageUrl + (user.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+					}
+				</td>
+
+				<td>@(user.FirstName + " " + user.LastName)</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#noPicksTable').dataTable({
+			paging: false,
+			ordering: false,
+			sorting: false,
+			searching: false,
+			info: false,
+			order: [],
+			columnDefs: [
+				{ // user image
+					targets: 0,
+					width: '1px'
+				},
+				{ // user name
+					targets: 1,
+					width: '100%'
+				}
+			]
+		});
+	});
+</script>

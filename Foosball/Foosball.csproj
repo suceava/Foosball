@@ -527,6 +527,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Admin\Announcement.cshtml" />
+    <Content Include="Views\Picks\NoPicks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\" />
