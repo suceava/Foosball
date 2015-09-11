@@ -17,6 +17,11 @@ namespace Foosball.DataContexts
 		{
 			using (var db = new SchedulesDb())
 			{
+				if (db.Schedules == null || db.Schedules.Count() == 0)
+				{
+					return 0;
+				}
+
 				var maxWeek = db.Schedules.Max(s => s.Week);
 				return db.Schedules.Where(s => s.Date >= DateTime.Now).Min(s => (int?)s.Week).GetValueOrDefault(maxWeek);
             }

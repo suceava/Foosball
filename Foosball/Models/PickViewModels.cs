@@ -156,6 +156,11 @@ namespace Foosball.Models
 		{
 			// get schedules for the week
 			var schedules = ScheduleViewModel.GetList(week);
+			if (schedules == null)
+			{
+				hasLockedSchedule = false;
+				return null;
+			}
 			hasLockedSchedule = schedules.Any(s => !s.IsPickable);
 
 			// get all the picks for the week
@@ -176,7 +181,8 @@ namespace Foosball.Models
 
 			// give users who made NO picks the minimum pick score minus one
 			// RULE: If you do not enter your picks for any week then you will get the lowest score minus one from participants for that particular week
-			var minPicks = listAllPicks.Where(p => p.PickedTeams.Values.Any(t => t != null)).Min(p => p.CorrectPicks);
+			var atLeastOnePick = listAllPicks.Where(p => p.PickedTeams.Values.Any(t => t != null));
+            var minPicks = (atLeastOnePick.Count() == 0 ? 0 : atLeastOnePick.Min(p => p.CorrectPicks));
 			foreach (var pick in listAllPicks.Where(p => p.PickedTeams.Values.All(t => t == null)))
 			{
 				pick.CorrectPicks = Math.Max(minPicks - 1, 0);
