@@ -173,7 +173,7 @@ namespace Foosball.Controllers
 		{
 			var standings = StandingsViewModel.GetList();
 
-			return PartialView(standings.Take(20).ToList());
+			return PartialView(standings.Take(15).ToList());
 		}
 	}
 }
