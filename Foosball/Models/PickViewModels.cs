@@ -162,6 +162,7 @@ namespace Foosball.Models
 				return null;
 			}
 			hasLockedSchedule = schedules.Any(s => !s.IsPickable);
+			var allPicksAreLocked = schedules.All(s => !s.IsPickable);
 
 			// get all the picks for the week
 			var allPicks = PickViewModel.GetListForWeek(week);
@@ -179,14 +180,17 @@ namespace Foosball.Models
 				listAllPicks.Add(ForUserFromPicks(allPicks, user, schedules, masterPicks));
 			}
 
-			// give users who made NO picks the minimum pick score minus one
-			// RULE: If you do not enter your picks for any week then you will get the lowest score minus one from participants for that particular week
-			var atLeastOnePick = listAllPicks.Where(p => p.PickedTeams.Values.Any(t => t != null));
-            var minPicks = (atLeastOnePick.Count() == 0 ? 0 : atLeastOnePick.Min(p => p.CorrectPicks));
-			foreach (var pick in listAllPicks.Where(p => p.PickedTeams.Values.All(t => t == null)))
+			if (allPicksAreLocked)
 			{
-				pick.CorrectPicks = Math.Max(minPicks - 1, 0);
-				pick.AwardedMinPoints = true;
+				// give users who made NO picks the minimum pick score minus one
+				// RULE: If you do not enter your picks for any week then you will get the lowest score minus one from participants for that particular week
+				var atLeastOnePick = listAllPicks.Where(p => p.PickedTeams.Values.Any(t => t != null));
+				var minPicks = (atLeastOnePick.Count() == 0 ? 0 : atLeastOnePick.Min(p => p.CorrectPicks));
+				foreach (var pick in listAllPicks.Where(p => p.PickedTeams.Values.All(t => t == null)))
+				{
+					pick.CorrectPicks = Math.Max(minPicks - 1, 0);
+					pick.AwardedMinPoints = true;
+				}
 			}
 
 			// do default sort by correct picks and name
