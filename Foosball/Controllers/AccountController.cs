@@ -292,12 +292,14 @@ namespace Foosball.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Admin")]
 		public ActionResult List()
 		{
 			return View();
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Admin")]
 		public ActionResult ListData()
 		{
 			return Json(new { data = UserListViewModel.GetList() }, JsonRequestBehavior.AllowGet);

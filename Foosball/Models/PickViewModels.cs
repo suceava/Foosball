@@ -110,6 +110,16 @@ namespace Foosball.Models
 			}
 		}
 
+		public static int MissingPicksForUser(string userId, int week)
+		{
+			// picks already made
+			var picks = PickViewModel.GetListForUser(userId, week);
+			// full schedule for this week
+			var schedules = ScheduleViewModel.GetList(week);
+
+			return (picks != null && schedules != null) ? schedules.Count - picks.Count : 0;
+		}
+
 		public void Save()
 		{
 			var pick = ToPick();
@@ -331,7 +341,7 @@ namespace Foosball.Models
 			for (var week = 1; week <= maxWeek; week++)
 			{
 				// see if all schedules for this week are locked
-				var weekIsDone = (week == maxWeek ? SchedulesDb.IsWeekLocked(week) : true);
+				var weekIsDone = (week == maxWeek ? PickViewModel.MissingPicksForUser(Pick.MASTER_PICKS_USER_ID, week) == 0 : true);
 
 				// get all picks for each week
 				var allPicks = AllPicksViewModel.GetListForWeek(week, out hasLockedSchedule);

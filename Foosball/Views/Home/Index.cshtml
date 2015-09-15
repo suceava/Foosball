@@ -7,11 +7,21 @@
 
 <div id="welcome" class="panel panel-default">
 	<div class="panel-body">
-		<h1>Welcome @ViewBag.FullName <img src="@ViewBag.ImageUrl"/></h1>
-		@if (ViewBag.Winnings > 0)
-		{
-			<h4>You have won a total of @ViewBag.Winnings.ToString("c")</h4>
-		}
+		<div class="row">
+			<div class="col-md-8">
+				<h1>Welcome @ViewBag.FullName <img src="@ViewBag.ImageUrl" /></h1>
+				@if (ViewBag.Winnings > 0)
+				{
+					<h4>You have won a total of @ViewBag.Winnings.ToString("c")</h4>
+				}
+			</div>
+			<div class="col-md-4">
+				@if (ViewBag.MissingPicks > 0)
+				{
+					<div class="alert-danger alert">@ViewBag.MissingPicks picks missing for current week</div>
+				}
+			</div>
+		</div>
 	</div>
 </div>
 

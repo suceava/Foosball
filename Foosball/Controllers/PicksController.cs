@@ -40,7 +40,7 @@ namespace Foosball.Controllers
 			var currentWeek = SchedulesDb.GetCurrentWeek();
 			var picksWeek = week.GetValueOrDefault(currentWeek);
 
-			// picks already mad
+			// picks already made
 			var picks = PickViewModel.GetListForUser(userId, picksWeek);
 			// full schedule for this week
 			var schedules = ScheduleViewModel.GetList(picksWeek);

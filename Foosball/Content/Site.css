@@ -165,4 +165,8 @@ td.rank-1 {
 }
 td.rank-2 {
 	background-color: silver;
+
+}
+.has-picked {
+	color: green !important;
 }

@@ -33,6 +33,7 @@
 			<th></th>
 			<th></th>
 			<th>Time</th>
+			<th></th>
 			<th>Away</th>
 			<th></th>
 			<th>Home</th>
@@ -56,6 +57,7 @@
 				{ data: 'Schedule.Date' },
 				{ data: 'GameDateDisplay' },
 				{ data: 'GameTimeDisplay' },
+				{ data: 'IsPick' },
 				{ data: 'Schedule.AwayTeam' },
 				{ data: '' },
 				{ data: 'Schedule.HomeTeam' },
@@ -73,6 +75,13 @@
 				},
 				{
 					targets: 3,
+					width: '20px',
+					render: function (data, type, row) {
+						return '<span class="has-picked ' + (data ? 'glyphicon glyphicon-ok' : '') + '"></span>';
+					}
+				},
+				{
+					targets: 4,
 					class: 'column-right',
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
@@ -93,14 +102,14 @@
 					}
 				},
 				{
-					targets: 4,
+					targets: 5,
 					class: 'column-center',
 					render: function () {
 						return '<span class="column-at">AT</span>';
 					}
 				},
 				{
-					targets: 5,
+					targets: 6,
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
 						td.data('scheduleId', rowData.Schedule.Id);
@@ -119,7 +128,7 @@
 					}
 				},
 				{
-					targets: 6,
+					targets: 7,
 					width: '75px',
 					class: 'total-points',
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
@@ -134,7 +143,7 @@
 					}
 				},
 				{
-					targets: 7,
+					targets: 8,
 					width: '20px',
 					render: function (data, type, row) {
 						return data ? '' : '<span class="glyphicon glyphicon-lock"></span>';
@@ -150,7 +159,7 @@
 				var api = this.api(),
 					rows = api.rows({ page: 'current' }).nodes(),
 					last = null,
-					tieBreakerRow = '<tr><td colspan="6">&nbsp;</td></tr>';
+					tieBreakerRow = '<tr><td colspan="7">&nbsp;</td></tr>';
  
 				api.column(1, { page: 'current' }).data().each(function (group, i) {
 					var lastRow = (i == rows.length - 1);
@@ -159,7 +168,7 @@
 						$(rows).eq(i).before(
 							(lastRow ?
 								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="4">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
-								'<tr class="group"><td colspan="6">' + group + '</td></tr>')
+								'<tr class="group"><td colspan="7">' + group + '</td></tr>')
 						);
  
 						last = group;
@@ -195,11 +204,7 @@
 			scheduleId = td.data('scheduleId'),
 			isHomeTeam = td.data('isHomeTeam');
 
-		// picked
-		tr.find('td').removeClass('picked');
-		td.addClass('picked');
-
-		save(scheduleId, isHomeTeam, null);
+		save(scheduleId, isHomeTeam, null, tr, td);
 	}
 
 	function saveScore(input) {
@@ -232,7 +237,7 @@
 		save(scheduleId, null, score);
 	}
 
-	function save(scheduleId, isHomeTeam, combinedScore) {
+	function save(scheduleId, isHomeTeam, combinedScore, tr, td) {
 		// save the pick
 		$.ajax({
 			url: _rootDir + 'picks/pick@(ViewBag.IsMaster ? "?isMaster=true" : "")',
@@ -246,6 +251,12 @@
 			},
 			success: function (e) {
 				console.log('pick saved');
+
+				if (tr) {
+					tr.find('td').removeClass('picked');
+					tr.find('.has-picked').addClass('glyphicon glyphicon-ok');
+					td.addClass('picked');
+				}
 			}
 		});
 	}
