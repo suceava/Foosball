@@ -273,6 +273,11 @@
     <Content Include="Content\DataTables\swf\copy_csv_xls.swf" />
     <Content Include="Content\DataTables\swf\copy_csv_xls_pdf.swf" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\Tooltipster\css\themes\tooltipster-light.css" />
+    <Content Include="Content\Tooltipster\css\themes\tooltipster-noir.css" />
+    <Content Include="Content\Tooltipster\css\themes\tooltipster-punk.css" />
+    <Content Include="Content\Tooltipster\css\themes\tooltipster-shadow.css" />
+    <Content Include="Content\Tooltipster\css\tooltipster.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -308,6 +313,7 @@
     <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery.tooltipster.js" />
     <Content Include="Scripts\knockout-2.3.0.debug.js" />
     <Content Include="Scripts\knockout-2.3.0.js" />
     <Content Include="Scripts\knockout.validation.debug.js" />

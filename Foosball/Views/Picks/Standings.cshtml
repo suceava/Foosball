@@ -30,7 +30,7 @@
 				<td>
 					@if (!string.IsNullOrEmpty(s.User.ImageUrl))
 					{
-						<img src="@(s.User.ImageUrl + (s.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+						<img src="@(s.User.ImageUrl + (s.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" class="userTooltip" title="@s.User.FirstName" />
 					}
 				</td>
 				<td>
@@ -90,5 +90,15 @@
 
 		// change the container to fluid
 		$('div.body-content').removeClass('container').addClass('container-fluid');
+
+         $('.userTooltip').tooltipster({
+			arrow: false,
+			position: 'right',
+			content: $('<span></span>'),
+			functionBefore: function(origin, continueTooltip) {
+				origin.tooltipster('content', $('<img src="' + this[0].src.replace('?s=40', '?s=320') + '"/>'));
+				continueTooltip();
+			}
+		 });
 	});
 </script>
