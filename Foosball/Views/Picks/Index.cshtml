@@ -75,9 +75,9 @@
 				},
 				{
 					targets: 3,
-					width: '20px',
+					width: '50px',
 					render: function (data, type, row) {
-						return '<span class="has-picked ' + (data ? 'glyphicon glyphicon-ok' : '') + '"></span>';
+						return '<span class="has-picked">' + (data ? 'pick saved' : '') + '</span>';
 					}
 				},
 				{
@@ -254,7 +254,7 @@
 
 				if (tr) {
 					tr.find('td').removeClass('picked');
-					tr.find('.has-picked').addClass('glyphicon glyphicon-ok');
+					tr.find('.has-picked').text('pick saved');
 					td.addClass('picked');
 				}
 			}

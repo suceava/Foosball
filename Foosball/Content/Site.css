@@ -122,7 +122,9 @@ tr.spacer-row {
 #pastWinners ul {
 	list-style: none;
 }
-
+#welcome .alert {
+	font-weight: bold;
+}
 .picks-nav {
 	float: right;
 }
@@ -169,4 +171,5 @@ td.rank-2 {
 }
 .has-picked {
 	color: green !important;
+	font-size: 10px;
 }
