@@ -13,7 +13,7 @@
 
 @{ 
 	var masterPicks = Model[0];
-	var tableWidth = 64 + 160 + masterPicks.PickedTeams.Count * 64 + 32;
+	var tableWidth = 50 + 64 + 160 + masterPicks.PickedTeams.Count * 72 + 32;
 }
 
 @if(ViewBag.NoGamesLocked)
@@ -75,7 +75,7 @@
 				<td>
 					@if (!string.IsNullOrEmpty(pick.User.ImageUrl))
 					{
-						<img src="@(pick.User.ImageUrl + (pick.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+						<img src="@(pick.User.ImageUrl + (pick.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" class="userTooltip" />
 					}
 				</td>
 				<td>
@@ -115,7 +115,7 @@
 			columnDefs: [
 				{ // points
 					targets: 0,
-					width: '50px',
+					width: '1px',
 					class: 'column-right standing-points'
 				},
 				{ // user image
@@ -124,11 +124,15 @@
 				},
 				{ // user name
 					targets: 2,
-					width: '100%'
+					width: '160px'
 				},
+				@for (int i = 0; i < masterPicks.PickedTeams.Keys.Count; i++)
+				{
+					@Html.Raw("{ targets: " + (i+3) + ", width: '60px', class: ' column-right-spacer' },")
+				}
 				{ // combined score
 					targets: @(masterPicks.PickedTeams.Count + 3),
-					width: '24px',
+					width: '1px',
 					class: 'column-right'
 				}
 			]
@@ -136,5 +140,18 @@
 
 		// change the container to fluid
 		$('div.body-content').removeClass('container').addClass('container-fluid');
+
+
+        $('.userTooltip').tooltipster({
+			arrow: false,
+			position: 'right',
+			content: $('<span></span>'),
+			functionBefore: function(origin, continueTooltip) {
+				origin.tooltipster('content', $('<img src="' + this[0].src.replace('?s=40', '?s=320') + '"/>'));
+				continueTooltip();
+			}
+		});
+
+		setTimeout(function() { $('#picksTable').DataTable().columns.adjust(); }, 500);
 	});
 </script>
