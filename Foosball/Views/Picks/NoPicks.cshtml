@@ -20,7 +20,7 @@
 				<td>
 					@if (!string.IsNullOrEmpty(user.ImageUrl))
 					{
-						<img src="@(user.ImageUrl + (user.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" />
+						<img src="@(user.ImageUrl + (user.ImageUrl.Contains("gravatar") ? "&s=40" : ""))" />
 					}
 				</td>
 

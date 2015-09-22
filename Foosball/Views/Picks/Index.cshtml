@@ -139,7 +139,8 @@
 						if (!row.Schedule.RequireScore) {
 							return '';
 						}
-						return '<div><input placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + (row.CanPick ? '' : 'readonly="readonly"') + ' /></div>';
+						return '<div><input placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data ? data : '') + '" ' + 
+							(row.CanPick ? '' : 'readonly="readonly"') + ' /><span class="has-picked">' + (data ? 'score saved' : '') + '</span></div>';
 					}
 				},
 				{
@@ -167,7 +168,7 @@
 					if (last !== group) {
 						$(rows).eq(i).before(
 							(lastRow ?
-								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="4">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
+								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="5">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
 								'<tr class="group"><td colspan="7">' + group + '</td></tr>')
 						);
  
@@ -234,7 +235,7 @@
 			return;
 		}
 
-		save(scheduleId, null, score);
+		save(scheduleId, null, score, div);
 	}
 
 	function save(scheduleId, isHomeTeam, combinedScore, tr, td) {
@@ -254,8 +255,10 @@
 
 				if (tr) {
 					tr.find('td').removeClass('picked');
-					tr.find('.has-picked').text('pick saved');
-					td.addClass('picked');
+					tr.find('.has-picked:first').text(combinedScore == null ? 'pick saved' : 'score saved');
+
+					if (td)
+						td.addClass('picked');
 				}
 			}
 		});

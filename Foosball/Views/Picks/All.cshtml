@@ -75,7 +75,7 @@
 				<td>
 					@if (!string.IsNullOrEmpty(pick.User.ImageUrl))
 					{
-						<img src="@(pick.User.ImageUrl + (pick.User.ImageUrl.Contains("gravatar") ? "?s=40" : ""))" class="userTooltip" />
+						<img src="@(pick.User.ImageUrl + (pick.User.ImageUrl.Contains("gravatar") ? "&s=40" : ""))" class="userTooltip" />
 					}
 				</td>
 				<td>
@@ -147,7 +147,7 @@
 			position: 'right',
 			content: $('<span></span>'),
 			functionBefore: function(origin, continueTooltip) {
-				origin.tooltipster('content', $('<img src="' + this[0].src.replace('?s=40', '?s=320') + '"/>'));
+				origin.tooltipster('content', $('<img src="' + this[0].src.replace('&s=40', '?s=320') + '"/>'));
 				continueTooltip();
 			}
 		});

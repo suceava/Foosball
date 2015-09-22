@@ -146,7 +146,7 @@ namespace Foosball.Controllers
 			if (ModelState.IsValid)
 			{
 				// get default gravatar image url
-				var imageUrl = string.Format("http://www.gravatar.com/avatar/{0}", GetEmailHash(model.Email.Trim().ToLower()));
+				var imageUrl = string.Format("http://www.gravatar.com/avatar/{0}?r=pg", GetEmailHash(model.Email.Trim().ToLower()));
 
 				var user = new User { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, ImageUrl = imageUrl };
 				var result = await UserManager.CreateAsync(user, model.Password);
