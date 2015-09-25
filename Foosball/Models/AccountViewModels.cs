@@ -71,12 +71,11 @@ namespace Foosball.Models
 
 		public static List<UserListViewModel> GetListWithNoPicks(int week)
 		{
-			bool b;
-			var allPicks = AllPicksViewModel.GetListForWeek(week, out b);
+			var allPicks = PickViewModel.GetListForWeek(week);
+			var users = allPicks.Select(p => p.User).ToList();
 
-			return allPicks
-				.Where(p => p.PickedTeams.Values.All(t => t == null))
-				.Select(p => p.User)
+			return GetList()
+				.Where(u => null == users.Find(uu => uu.Id == u.Id))
 				.ToList();
 		}
 	}

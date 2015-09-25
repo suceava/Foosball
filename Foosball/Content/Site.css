@@ -69,9 +69,11 @@ table {
 td.picked {
 	font-weight: bold;
 	color: #1f44e3;
-	background-color: #eee !important;
 	border-left: 1px solid #bbb;
 	border-right: 1px solid #bbb;
+}
+td.picked-current {
+	background-color: #eee !important;
 }
 td.pickable {
 	cursor: pointer;

@@ -90,6 +90,15 @@
 
 						if (rowData.IsPick && !rowData.PickHomeTeam) {
 							td.addClass('picked');
+							if (rowData.IsCorrect) {
+								td.addClass('correct-pick');
+							}
+							else if (rowData.IsCorrect == false) {
+								td.addClass('incorrect-pick');
+							}
+							else {
+								td.addClass('picked-current');
+							}
 						}
 						if (rowData.CanPick) {
 							td.addClass('pickable');
@@ -117,6 +126,15 @@
 
 						if (rowData.IsPick && rowData.PickHomeTeam) {
 							td.addClass('picked');
+							if (rowData.IsCorrect) {
+								td.addClass('correct-pick');
+							}
+							else if (rowData.IsCorrect == false) {
+								td.addClass('incorrect-pick');
+							}
+							else {
+								td.addClass('picked-current');
+							}
 						}
 						if (rowData.CanPick) {
 							td.addClass('pickable');

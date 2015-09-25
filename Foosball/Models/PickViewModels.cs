@@ -25,6 +25,9 @@ namespace Foosball.Models
 		// indicates if it's a pick made by user or a un-picked scheduled game
 		public bool IsPick { get; set; }
 
+		// indicates if pick was correct - only used for past weeks
+		public bool? IsCorrect { get; set; }
+
 		#region conversion
 
 		public static PickViewModel FromPick(Pick pick)

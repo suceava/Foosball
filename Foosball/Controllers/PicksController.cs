@@ -35,13 +35,25 @@ namespace Foosball.Controllers
 
 			#endregion
 
-			var userId = (isMaster.GetValueOrDefault(false) ? Guid.Empty.ToString() : User.Identity.GetUserId());
+			var masterUserId = Guid.Empty.ToString();
+            var userId = (isMaster.GetValueOrDefault(false) ? masterUserId : User.Identity.GetUserId());
 			var user = new UserListViewModel();
 			var currentWeek = SchedulesDb.GetCurrentWeek();
 			var picksWeek = week.GetValueOrDefault(currentWeek);
 
 			// picks already made
 			var picks = PickViewModel.GetListForUser(userId, picksWeek);
+			if (!isMaster.GetValueOrDefault(false) && picksWeek < currentWeek)
+			{
+				// get master picks to see if picks were correct
+				var masterPicks = PickViewModel.GetListForUser(masterUserId, picksWeek);
+				foreach (var p in picks)
+				{
+					var masterPick = masterPicks.Find(m => m.Schedule.Id == p.Schedule.Id);
+                    p.IsCorrect = (masterPick != null && masterPick.PickHomeTeam == p.PickHomeTeam);
+				}
+			}
+
 			// full schedule for this week
 			var schedules = ScheduleViewModel.GetList(picksWeek);
 
