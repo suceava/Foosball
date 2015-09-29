@@ -272,11 +272,11 @@
 				console.log('pick saved');
 
 				if (tr) {
-					tr.find('td').removeClass('picked');
+					tr.find('td').removeClass('picked').removeClass('picked-current');
 					tr.find('.has-picked:first').text(combinedScore == null ? 'pick saved' : 'score saved');
 
 					if (td)
-						td.addClass('picked');
+						td.addClass('picked picked-current');
 				}
 			}
 		});
