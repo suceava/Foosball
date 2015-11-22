@@ -131,6 +131,22 @@ namespace Foosball.Controllers
 
 			#endregion
 
+			int pickId = 0;
+			try
+			{
+				pickId = SavePick(userId, model);
+			}
+			catch (System.Data.Entity.Infrastructure.DbUpdateException)
+			{
+				// we most like were inserting a duplicate => try again
+				pickId = SavePick(userId, model);
+			}
+
+			return Json(pickId);
+		}
+
+		private int SavePick(string userId, PickViewModel model)
+		{
 			// load pick if already exists
 			var pick = PickViewModel.GetForSchedule(userId, model.Schedule.Id);
 			if (pick == null)
@@ -153,7 +169,7 @@ namespace Foosball.Controllers
 
 			pick.Save();
 
-			return Json(pick.Id);
+			return pick.Id;
 		}
 
 		[HttpGet]
