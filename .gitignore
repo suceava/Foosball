@@ -197,6 +197,7 @@ FakesAssemblies/
 
 # user config files
 userConnections.config
+user.config
 
 # publish folder
 .publish/
