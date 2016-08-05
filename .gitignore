@@ -198,6 +198,7 @@ FakesAssemblies/
 # user config files
 userConnections.config
 user.config
+user.godaddy.config
 
 # publish folder
 .publish/

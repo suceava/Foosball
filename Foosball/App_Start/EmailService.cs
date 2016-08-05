@@ -43,28 +43,28 @@ namespace Foosball
 	{
 		public async Task SendAsync(IdentityMessage message)
 		{
-			var mailAccount = ConfigurationManager.AppSettings["mailAccount"];
-			if (string.IsNullOrEmpty(mailAccount))
+			if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["mailServer"]))
 			{
 				return;
 			}
 
             var msg = new MailMessage
 			{
-				From = new MailAddress(mailAccount, "NFL Pool", System.Text.Encoding.UTF8),
+				From = new MailAddress(ConfigurationManager.AppSettings["mailFrom"], "NFL Pool", System.Text.Encoding.UTF8),
 				Subject = message.Subject,
 				Body = message.Body,
 				IsBodyHtml = true
 			};
 			msg.To.Add(new MailAddress(message.Destination));
 
-			var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+			var smtpClient = new SmtpClient(ConfigurationManager.AppSettings["mailServer"], int.Parse(ConfigurationManager.AppSettings["mailPort"]));
+			if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["mailAccount"]))
 			{
-				Credentials = new NetworkCredential(mailAccount, ConfigurationManager.AppSettings["mailPassword"]),
-				EnableSsl = true
+				smtpClient.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["mailAccount"], ConfigurationManager.AppSettings["mailPassword"]);
+				smtpClient.EnableSsl = true;
 			};
 
-			smtpClient.Send(msg);
+			smtpClient.SendAsync(msg, null);
 		}
 	}
 }
