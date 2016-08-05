@@ -273,6 +273,7 @@
     <Content Include="Content\DataTables\images\xls_hover.png" />
     <Content Include="Content\DataTables\swf\copy_csv_xls.swf" />
     <Content Include="Content\DataTables\swf\copy_csv_xls_pdf.swf" />
+    <Content Include="Content\images\nfl_logo.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Tooltipster\css\themes\tooltipster-light.css" />
     <Content Include="Content\Tooltipster\css\themes\tooltipster-noir.css" />
