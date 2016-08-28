@@ -10,7 +10,7 @@
     <ul class="nav navbar-nav navbar-right">
 		<li><a href="#">@("Hello " + User.FirstName() + "!")</a></li>
         <li>
-            @Html.ActionLink("Change Password", "Index", "Manage", routeValues: new { area = "" }, htmlAttributes: new { title = "Manage" })
+            @Html.ActionLink("Change Password", "ChangePassword", "Manage", routeValues: new { area = "" }, htmlAttributes: new { title = "Change Password" })
         </li>
         <li><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>
     </ul>
