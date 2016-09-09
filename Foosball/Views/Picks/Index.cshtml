@@ -52,6 +52,7 @@
 			sorting: false,
 			searching: false,
 			info: false,
+			//responsive: true,
 			order: [],
 			columns: [
 				{ data: 'Schedule.Date' },
@@ -147,13 +148,14 @@
 				},
 				{
 					targets: 7,
-					width: '75px',
-					class: 'total-points',
+					//width: '75px',
+					//class: 'total-points',
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
 						var td = $(cell);
 						td.data('scheduleId', rowData.Schedule.Id);
 					},
 					render: function (data, type, row) {
+					return '';
 						if (!row.Schedule.RequireScore) {
 							return '';
 						}
@@ -186,7 +188,8 @@
 					if (last !== group) {
 						$(rows).eq(i).before(
 							(lastRow ?
-								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="5">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
+								//tieBreakerRow + '<tr class="group tie-breaker"><td colspan="5">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
+								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="7">' + group + '</td></tr>' :
 								'<tr class="group"><td colspan="7">' + group + '</td></tr>')
 						);
  
