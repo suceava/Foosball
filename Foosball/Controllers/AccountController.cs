@@ -401,6 +401,12 @@ namespace Foosball.Controllers
 			UserManager.RemoveFromRole(id, role);
 			UserManager.AddToRole(id, (role == "Guest") ? "User" : "Admin");
 
+			if (role == "Guest")
+			{
+				// when going up from Guest to User send email about payment
+				UserManager.SendEmail(id, "NFL Pool Payment Received", "Your payment has been received and your account is now active. Please use your email and password to access the site <a href=\"http://football.arashamini.com/\">http://football.arashamini.com/</a>");
+			}
+
 			return Json(null);
 		}
 
