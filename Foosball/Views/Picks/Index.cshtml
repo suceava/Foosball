@@ -148,6 +148,7 @@
 				},
 				{
 					targets: 7,
+					visible: false,
 					//width: '75px',
 					//class: 'total-points',
 					createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
@@ -186,12 +187,27 @@
 					var lastRow = (i == rows.length - 1);
 
 					if (last !== group) {
+						var data = rows.data()[i];
+						console.log(data);
 						$(rows).eq(i).before(
 							(lastRow ?
-								//tieBreakerRow + '<tr class="group tie-breaker"><td colspan="5">' + group + '</td><td>TOTAL POINTS</td><td></td></tr>' :
-								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="7">' + group + '</td></tr>' :
-								'<tr class="group"><td colspan="7">' + group + '</td></tr>')
+								tieBreakerRow + '<tr class="group tie-breaker"><td colspan="6">' + group + '</td></tr>' :
+								'<tr class="group"><td colspan="6">' + group + '</td></tr>')
 						);
+						if (data.Schedule.RequireScore) {
+							$(rows).eq(i).after(''+
+								'<tr>' +
+									'<td colspan="2"></td><td colspan="3" class="column-center">' +
+										'<div class="row">' +
+											'<div class="col-md-2 col-md-offset-5">' +
+												'<input id="total_points" placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data.CombinedScore ? data.CombinedScore : '') + '" ' + 
+												(data.CanPick ? '' : 'readonly="readonly"') + ' /><span class="has-picked">' + (data.CombinedScore ? 'score saved' : '') + '</span>' +
+											'</div>' +
+										'</div>' +
+									'</td><td></td>' +
+								'</tr>');
+							$('#total_points').data('scheduleId', data.Schedule.Id);
+						}
  
 						last = group;
 					}
@@ -233,7 +249,7 @@
 		var div = input.parent(),
 			td = div.parent(),
 			tr = td.parent(),
-			scheduleId = td.data('scheduleId'),
+			scheduleId = input.data('scheduleId'),
 			score = input.val();
 	
 		div.removeClass('has-error');
