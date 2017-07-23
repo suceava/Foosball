@@ -106,7 +106,9 @@
 						}
 					},
 					render: function (data, type, row) {
-						var dom = '<span class="team-name-list">' + data.Name.toUpperCase() + '</span><img class="team-logo-small" src="' + data.ImageUrl + '"/>';
+						var dom = '<span class="team-name-list team-name-home-left">' + data.Name.toUpperCase() + '</span>' +
+								'<img class="team-logo-small" src="' + data.ImageUrl + '"/>' + 
+								'<span class="team-name-list team-name-home-right">' + data.Name.toUpperCase() + '</span>';
 
 						return dom;
 					}
@@ -142,7 +144,7 @@
 						}
 					},
 					render: function (data, type, row) {
-						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list">' + data.Name.toUpperCase() + '</span>';
+						var dom = '<img class="team-logo-small" src="' + data.ImageUrl + '"/><span class="team-name-list team-name-away">' + data.Name.toUpperCase() + '</span>';
 						return dom;
 					}
 				},
@@ -197,14 +199,14 @@
 						if (data.Schedule.RequireScore) {
 							$(rows).eq(i).after(''+
 								'<tr>' +
-									'<td colspan="2"></td><td colspan="3" class="column-center">' +
+									'<td colspan="6" class="column-center">' +
 										'<div class="row">' +
 											'<div class="col-md-2 col-md-offset-5">' +
 												'<input id="total_points" placeholder="POINTS" type="text" class="form-control" maxlength="3" value="' + (data.CombinedScore ? data.CombinedScore : '') + '" ' + 
 												(data.CanPick ? '' : 'readonly="readonly"') + ' /><span class="has-picked">' + (data.CombinedScore ? 'score saved' : '') + '</span>' +
 											'</div>' +
 										'</div>' +
-									'</td><td></td>' +
+									'</td>' +
 								'</tr>');
 							$('#total_points').data('scheduleId', data.Schedule.Id);
 						}

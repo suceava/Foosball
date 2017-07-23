@@ -175,3 +175,18 @@ td.rank-2 {
 	color: green !important;
 	font-size: 10px;
 }
+
+.team-name-home-right {
+	display: none;
+}
+.team-name-home-left {
+	display: inline;
+}
+@media only screen and (max-width: 480px) {
+	.team-name-home-right {
+		display: block;
+	}
+	.team-name-home-left {
+		display: none;
+	}
+}
