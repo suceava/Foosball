@@ -190,3 +190,11 @@ td.rank-2 {
 		display: none;
 	}
 }
+
+
+/* HACK for Bootstrap 3.0.0 not handling offset in mobile */
+@media (max-width: 768px) {
+	.col-xs-offset-6 {
+		margin-left: 50%;
+	}
+}
