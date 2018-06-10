@@ -142,6 +142,16 @@ tr.spacer-row {
 	background-color: #ffc0c0;
 }
 
+#total_points::-webkit-input-placeholder {
+	font-size: 10px;
+}
+#total_points::-ms-input-placeholder {
+	font-size: 10px;
+}
+#total_points::placeholder {
+	font-size: 10px;
+}
+
 @media (max-width: 800px) {
 	/* hide user image */
 	img.user-list-image {
