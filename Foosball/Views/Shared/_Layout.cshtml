@@ -73,21 +73,6 @@
 						</li>
 					}
 
-					@if (User.IsInRole("User") || User.IsAdmin())
-					{
-						<li role="presentation" class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Past Winners <span class="caret"></span></a>
-
-							<ul class="dropdown-menu">
-								@for (var i = 2016; i >= 1999; i--)
-								{
-									<li>
-										<a target="_blank/" href="http://arashamini.com/NFL/@(i)Standing.htm">@i Standings</a>
-									</li>
-								}
-							</ul>
-						</li>
-					}
 				</ul>
 				@Html.Partial("_LoginPartial")
 			</div>
