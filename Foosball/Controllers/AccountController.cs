@@ -12,6 +12,7 @@ using Foosball.Entities;
 using Foosball.Models;
 using System.Text;
 using System.Net;
+using System.Configuration;
 
 namespace Foosball.Controllers
 {
@@ -163,6 +164,17 @@ namespace Foosball.Controllers
 					// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 					// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
 					// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+					// send email to admin
+					var adminUserEmail = ConfigurationManager.AppSettings["AdminUserEmail"];
+					if (!string.IsNullOrEmpty(adminUserEmail))
+					{
+						var adminUser = await UserManager.FindByEmailAsync(adminUserEmail);
+						if (adminUser != null)
+						{
+							await UserManager.SendEmailAsync(adminUser.Id, "NFL Pool - New user registration", $"A new user registered with email {user.Email}");
+						}
+					}
 
 					return RedirectToAction("Index", "Home");
 				}
