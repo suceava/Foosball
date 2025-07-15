@@ -236,7 +236,13 @@
 	$('#picksTable')
 		.on('keyup', 'input.form-control', function () {
 			clearTimeout($.data(this, 'timer'));
-			var wait = setTimeout(saveScore, 500, $(this));
+			var wait = setTimeout(saveScore, 1000, $(this)); // Increased delay
+			$(this).data('timer', wait);
+		})
+		.on('blur', 'input.form-control', function () {
+			// Also save when user leaves the field
+			clearTimeout($.data(this, 'timer'));
+			var wait = setTimeout(saveScore, 100, $(this));
 			$(this).data('timer', wait);
 		});
 

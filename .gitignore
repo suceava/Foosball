@@ -202,3 +202,5 @@ user.godaddy.config
 
 # publish folder
 .publish/
+
+.DS_Store
